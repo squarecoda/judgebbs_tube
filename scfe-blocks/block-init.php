@@ -11,3 +11,8 @@ class Tube_Category extends Custom_Block {
 }
 
 
+class Tube_Dashboard extends Tube_Category {
+	public $class_name = __CLASS__;
+	public $fields = [];
+}
+new Tube_Dashboard;

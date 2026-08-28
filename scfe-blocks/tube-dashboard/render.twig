@@ -1,0 +1,48 @@
+{% set widgets = [
+	{
+		heading: 'Profile',
+		body: '[Profile Widget Body]',
+		cta: {
+			text: 'View Profile',
+			url: '#profile',
+		},
+	},
+	{
+		heading: 'Quick Search',
+		body: '[Search Widget Body]',
+		cta: {
+			text: 'Full Search',
+			url: '#search',
+		},
+	},
+	{
+		heading: 'Saved Videos',
+		body: '[Saved Videos Widget Body]',
+		cta: {
+			text: 'See All',
+			url: '#saved-videos',
+		},
+	},
+	{
+		heading: 'Saved Playlists',
+		body: '[Saved Playlists Widget Body]',
+		cta: {
+			text: 'See All',
+			url: '#saved-playlists',
+		},
+	},
+] %}
+
+<div class="widget-wrapper">
+
+	{% for widget in widgets %}
+	<div class="widget">
+		<div class="widget-heading">{{ widget.heading }}</div>
+		<div class="widget-body">{{ widget.body }}</div>
+		<div class="widget-cta">
+			<a class="scfe-cta-button" href="{{ widget.cta.url }}">{{ widget.cta.text }}</a>
+		</div>
+	</div>
+	{% endfor %}
+
+</div>

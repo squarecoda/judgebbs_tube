@@ -1,0 +1,1 @@
+import { buildCustomBlock } from "/wp-content/plugins/sc-field-editor/templates/blocks/block-init.js"; buildCustomBlock(blockVars__tube_dashboard);
