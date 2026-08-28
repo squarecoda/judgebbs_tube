@@ -237,7 +237,7 @@ class Judges extends Child_Theme {
 				],
 				'crop' => [
 					'dimensions' => [
-						'height' => 800,
+						'height' => 600,
 						'width' => 600,
 					],
 				],
