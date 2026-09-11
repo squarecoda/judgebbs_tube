@@ -104,6 +104,44 @@ class Child_Theme extends Base {
 		return $full_name;	
 	}
 
+	public function get_district_options($include_international = false) {
+		$labels = [
+			'CAR',
+			'CSD',
+			'EVG',
+			'ILL',
+			'JAD',
+			'LOL',
+			'MAD',
+			'NED',
+			'NSC',
+			'ONT',
+			'PIO',
+			'SHD',
+			'SLD',
+			'SUN',
+			'FWD',
+			'RMD',
+			'SWD',
+
+			'BABS',
+			'BHA',
+			'BHNZ',
+			'SNOBS',
+		];
+
+		if($include_international) {
+			$labels = array_merge(['INTL'], $labels, ['Other']);
+		}
+
+		$options = [];
+		foreach($labels as $label) {
+			$options[strtolower($label)] = $label;
+		}
+
+		return $options;
+	}
+
 }
 
 new Child_Theme;

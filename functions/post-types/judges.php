@@ -10,10 +10,6 @@ class Judges extends Child_Theme {
 	public $singular = 'Judge';
 	public $plural = 'Judges';
 
-	public $name_cookie;
-	public $id_cookie;
-	public $cookie_length;
-
 	public function __construct($run_filters = true) {
 		parent::set_props();
 
@@ -29,7 +25,6 @@ class Judges extends Child_Theme {
 			// Field Formatting
 			add_action('edit_form_after_title', [$this, 'show_name_instead_of_title'], 5);
 			add_action('sc_field_editor/after_process_fields', [$this, 'update_member_title_when_full_name_changed']);
-			add_filter('the_title', [$this, 'get_name_instead_of_title'], 10, 2);
 			add_filter(sprintf('%s/imports/%s/posts_for_associate_files', 'sc_field_editor', $this->post_type), [$this, 'add_post_title_to_import']);
 			add_filter(sprintf('%s/imports/%s/posts_with_attachment_ids', 'sc_field_editor', $this->post_type), [$this, 'add_post_title_to_import']);
 
@@ -91,14 +86,6 @@ class Judges extends Child_Theme {
 				]);
 			}
 		}
-	}
-
-	public function get_name_instead_of_title($title, $post_id) {
-		if(get_post_type($post_id) == $this->post_type) {
-			return $this->get_full_name($post_id);
-		}
-
-		return $title;
 	}
 
 	public function show_name_instead_of_title($post) {
@@ -207,6 +194,9 @@ class Judges extends Child_Theme {
 
 
 		$fields = array_merge($fields, [
+			'address_divider' => [
+				'type' => 'divider',
+			],
 			'address_section_header' => [
 				'type' => 'section_header',
 				'label' => 'Address',
@@ -283,45 +273,39 @@ class Judges extends Child_Theme {
 						'email' => 'email',
 					],
 				],
+				'judge_category' => [ 
+					'type' => 'select',
+					'label' => 'Category',
+					'select_options' => $this->get_category_options(),
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'candidate' => [
+					'type' => 'true-false',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'year_certified' => [
+					'type' => 'text',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
 			]);
 		}
 
 		return $this->encode_json(apply_filters(sprintf('%s/%s/fields', $this->theme_slug, $this->module_slug), $fields, $edit));
 	}
 
-	public function get_district_options() {
-		$districts = [
-
-			'CAR',
-			'CSD',
-			'EVG',
-			'ILL',
-			'JAD',
-			'LOL',
-			'MAD',
-			'NED',
-			'NSC',
-			'ONT',
-			'PIO',
-			'SHD',
-			'SLD',
-			'SUN',
-			'FWD',
-			'RMD',
-			'SWD',
-
-			'BABS',
-			'BHA',
-			'BHNZ',
-			'SNOBS',
+	public function get_category_options() {
+		return [
+			'adm' => '⚪ Administrator (ADM)',
+			'mus' => '🔴 Musicality (MUS)',
+			'per' => '🟢 Performance (PER)',
+			'sng' => '🔵 Singing (SNG)',
 		];
-
-		$options = [];
-		foreach($districts as $district) {
-			$options[strtolower($district)] = $district;
-		}
-
-		return $options;
 	}
 
 }
