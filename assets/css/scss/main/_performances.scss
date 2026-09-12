@@ -79,6 +79,7 @@
 				.score-edit {
 					display: none;
 					padding: 0 var(--inner-padding);
+					box-sizing: border-box;
 					.submit-score-edit {
 						background: #445;
 						color: white;

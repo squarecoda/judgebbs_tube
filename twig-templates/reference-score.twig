@@ -26,12 +26,12 @@
 	</div>
 	<div class="reference-score-display-body">
 		<div class="score-view">{{ score }}</div>
-		<form class="score-edit" category="{{ category }}">
-			<input type="number" step=".1" min="0" max="100" category="{{ category }}">
-			<button class="submit-score-edit">
+		<div class="score-edit" category="{{ category }}">
+			<input class="score-value" type="number" step=".1" min="0" max="100" category="{{ category }}">
+			<div class="submit-score-edit">
 				<span class="fas fa-arrow-up-from-bracket"></span>
-			</button>
-		</form>
+			</div>
+		</div>
 	</div>
 	{% if is_admin %}
 	<div class="reference-score-display-footer">

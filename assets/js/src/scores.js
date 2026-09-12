@@ -13,15 +13,24 @@ jQuery(document).ready(function($){
 			parentDiv.removeClass('editing');
 		});	
 
-		$('.reference-score-display .score-edit').on('submit', function(e){
-			e.preventDefault();
+		$('.reference-score-display .score-edit .submit-score-edit').on('click', function(){
+			updateReferenceScore($(this).closest('.score-edit'));
+		});	
 
-			const parentDiv = $(this).closest('.reference-score-display');
+		$('.reference-score-display .score-edit .score-value').on('keydown', function(e){
+			if(e.originalEvent.key == 'Enter') {
+				e.preventDefault();
+				updateReferenceScore($(this).closest('.score-edit'));
+			}
+		});	
 
-			const category = $(this).attr('category');
-			const input = $(this).find('input[category="' + category + '"]');
+		function updateReferenceScore(el) {
+			const parentDiv = el.closest('.reference-score-display');
+
+			const category = el.attr('category');
+			const input = el.find('input[category="' + category + '"]');
 			const value = input.val();
-			const postId = $(this).closest('.reference-score-wrapper').attr('post_id');
+			const postId = el.closest('.reference-score-wrapper').attr('post_id');
 
 			console.log(value);
 
@@ -31,7 +40,7 @@ jQuery(document).ready(function($){
 				parentDiv.find('.score-view').html('<span class="fas fa-cog fa-spin"></span>');
 
 				const data = {
-					action: 'bbs_update_refrence_score',
+					action: 'bbs_update_reference_score',
 					category: category,
 					score: value,
 					post_id: postId,
@@ -44,7 +53,8 @@ jQuery(document).ready(function($){
 					responseJson = JSON.parse(response);
 					console.log(responseJson);
 	
-					parentDiv.attr('score', responseJson.score).attr('update_history', btoa(JSON.stringify(responseJson.score_history)));
+					parentDiv.attr('score', responseJson.score);
+					parentDiv.find('.history.scfe-modal-trigger').attr('update_history', btoa(JSON.stringify(responseJson.score_history)));
 					parentDiv.find('.score-view').html(responseJson.score);
 
 					parentDiv.closest('.reference-score-wrapper').find('.reference-score-display.overall .score-view').html('<span class="fas fa-cog fa-spin"></span>');
@@ -55,7 +65,7 @@ jQuery(document).ready(function($){
 			} else {
 				window.alert('Please enter a value before submitting');
 			}
-		});	
+		}
 
 		$('.reference-score-display .history.scfe-modal-trigger').on('click', function(){
 			const target = $(this).attr('target');

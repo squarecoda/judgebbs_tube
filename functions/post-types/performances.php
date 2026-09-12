@@ -18,7 +18,7 @@ class Performances extends Child_Theme {
 			add_action('init', [$this, 'register_post_type'], 20);
 
 			// Update Reference Scores
-			$ajax_action = 'bbs_update_refrence_score';
+			$ajax_action = 'bbs_update_reference_score';
 			add_action(sprintf('wp_ajax_%s', $ajax_action), [$this, $ajax_action]);
 
 			// Get Posts
@@ -61,7 +61,7 @@ class Performances extends Child_Theme {
 	//=========================
 	// Update Reference Scores
 	//=========================
-	public function bbs_update_refrence_score() {
+	public function bbs_update_reference_score() {
 		$update_data = $_POST;
 		unset($update_data['action']);
 
