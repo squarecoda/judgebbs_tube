@@ -1,23 +1,14 @@
-{% if video_id %}
-	{% set video_url = '' %}
+<div class="performance-display">
 
-	{% if video_type == 'vimeo' %}
-		{% set video_url = 'https://player.vimeo.com/video/' ~ video_id %}
-	{% elseif video_type == 'youtube' %}
-		{% set video_url = 'https://www.youtube.com/embed/' ~ video_id %}
-	{% endif %}
+	<div class="video large">
+		{% include 'video.twig' %}
+	</div>
 
-	{{ video_url ? fn('do_shortcode', '[sc_video_embed link="' ~ video_url ~ '"]')}}
+	<div class="data">
+	</div>
 
-{% endif %}
+	<div class="scores large">
+		{% include 'reference-scores.twig' %}
+	</div>
 
-{#
-{% if video_id %}
-	{% if video_type == 'vimeo' %}
-	<iframe src="https://player.vimeo.com/video/{{ video_id }}" width="480" height="270" frameborder="0" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowfullscreen"></iframe>
-	{% elseif video_type == 'youtube' %}
-	<iframe src="https://www.youtube.com/embed/{{ video_id }}" width="480" height="270" frameborder="0" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowfullscreen"></iframe>
-	{% endif %}
-{% endif %}
-#}
-
+</div>

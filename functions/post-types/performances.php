@@ -17,6 +17,10 @@ class Performances extends Child_Theme {
 			// Register Post Types
 			add_action('init', [$this, 'register_post_type'], 20);
 
+			// Update Reference Scores
+			$ajax_action = 'bbs_update_refrence_score';
+			add_action(sprintf('wp_ajax_%s', $ajax_action), [$this, $ajax_action]);
+
 			// Get Posts
 
 			// Post Type Edit Pages
@@ -51,6 +55,28 @@ class Performances extends Child_Theme {
 				'supports' => ['none'],
 			],
 		];
+	}
+
+
+	//=========================
+	// Update Reference Scores
+	//=========================
+	public function bbs_update_refrence_score() {
+		$update_data = $_POST;
+		unset($update_data['action']);
+
+		$score = $_POST['score'];
+
+		//User/Judge IDs
+		$update_data['user_id'] = get_current_user_id();
+		$update_data['judge_id'] = $this->get_judge_from_user($update_data['user_id']);
+
+		$score_history = update_reference_score($update_data);
+		// $score_history = $update_data;
+
+		$postfields = $_POST;
+		echo json_encode(compact('score', 'update_data', 'score_history', 'postfields'));
+		exit;
 	}
 
 
@@ -104,11 +130,16 @@ class Performances extends Child_Theme {
 		$type_options = $this->get_contest_type_options();
 
 		//Updates to fields
+		if(!empty($contestant)) $contestant = get_the_title($contestant);
 		if(!empty($district_options[$contest_district])) $contest_district = $district_options[$contest_district];
 		if(!empty($type_options[$contest_type])) $contest_type = $type_options[$contest_type];
 		if(!empty($performance_date)) $performance_date = date('n/j/Y', strtotime($performance_date));
 
-		return sprintf('%s &ndash; %s (%s %s %s)', $song_title, $contestant, $contest_district, $contest_type, $performance_date);
+		$performance_name = in_array($contest_type, ['District', 'Prelims', 'Divisional']) 
+			? sprintf('%s %s', $contest_district, $contest_type) 
+			: sprintf('%s %s', $contest_type, 'Contest');
+
+		return sprintf('%s &ndash; %s (%s %s)', $song_title, $contestant, $performance_name, $performance_date);
 	}
 
 	public function show_name_instead_of_title($post) {
@@ -142,7 +173,7 @@ class Performances extends Child_Theme {
 				'type' => 'select',
 				'select_options' => $this->get_song_style_options(),
 				'styles' => [
-					'width' => '25%',
+					'width' => '20%',
 				],
 			],
 			'video_type' => [
@@ -150,22 +181,44 @@ class Performances extends Child_Theme {
 				'radio_options' => [
 					'vimeo' => 'Vimeo',
 					'youtube' => 'Youtube',
+					'url' => 'Full URL',
 				],
 				'styles' => [
-					'width' => '25%',
+					'width' => '20%',
 				],
 			],
 			'video_id' => [
 				'type' => 'text',
 				'label' => 'Video ID',
 				'styles' => [
-					'width' => '25%',
+					'width' => '35%',
 				],
 				'conditional_rules' => [
 					'show' => [
 						[
 							'key' => 'video_type',
 							'value' => 'has_value',
+						],
+					],
+					'hide' => [
+						[
+							'key' => 'video_type',
+							'value' => 'url',
+						],
+					],
+				]
+			],
+			'video_url' => [
+				'type' => 'text',
+				'label' => 'Video URL',
+				'styles' => [
+					'width' => '35%',
+				],
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'video_type',
+							'value' => 'url',
 						],
 					],
 				]
@@ -177,12 +230,24 @@ class Performances extends Child_Theme {
 				'type' => 'divider',
 			],
 			'contestant' => [
-				'type' => 'text',
-				'styles' => [
-					'width' => '25%',
+				'type' => 'typeahead',
+				'label' => 'Contestant',
+				'search_type' => 'bbs-contestant', 
+				'search_fields' => [ 
+					'title',
 				],
 				'attributes' => [
 					'required' => true,
+					'placeholder' => 'Type contestant name',
+				],
+				'additional_fields' => [
+					'contestant_type' => ['function' => 'static_get_contestant_type_display', 'class' => '\\SquareCoda\\Theme\\Contestants'],
+					'contestant_voicing' => ['function' => 'static_get_contestant_voicing_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+				],
+				'result_template' => '<div class="title">{{title}}</div><div class="meta"></div><div class="meta"><span class="description">Voicing: </span><span class="value">{{contestant_voicing}}</span></div><div class="meta"><span class="description">Type: </span><span class="value">{{contestant_type}}</span></div>', 
+				'multiple' => false,
+				'styles' => [
+					'width' => '25%'
 				],
 			],
 			'contestant_size' => [
@@ -201,17 +266,28 @@ class Performances extends Child_Theme {
 					'required' => true,
 				],
 			],
-			'performance_date' => [
-				'type' => 'datepicker',
-				'styles' => [
-					'width' => '25%',
-				],
+		]);
+
+		$fields = array_merge($fields, [
+			'scores_divider' => [
+				'type' => 'divider',
+			],
+			'reference_scores' => [
+				'type' => 'html',
+				'label' => ' ',
+				'content' => $this->show_timber_template('reference-scores.twig'),
 			],
 		]);
 
 		$fields = array_merge($fields, [
 			'contest_divider' => [
 				'type' => 'divider',
+			],
+			'performance_date' => [
+				'type' => 'datepicker',
+				'styles' => [
+					'width' => '25%',
+				],
 			],
 			'contest_district' => [
 				'type' => 'select',
@@ -235,39 +311,6 @@ class Performances extends Child_Theme {
 			],
 			'panel_size' => [
 				'type' => 'number',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-		]);
-
-		$fields = array_merge($fields, [
-			'scores_divider' => [
-				'type' => 'divider',
-			],
-			'overall_score' => [
-				'type' => 'text',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'mus_score' => [
-				'type' => 'text',
-				'label' => 'MUS Score',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'per_score' => [
-				'type' => 'text',
-				'label' => 'PER Score',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'sng_score' => [
-				'type' => 'text',
-				'label' => 'SNG Score',
 				'styles' => [
 					'width' => '25%',
 				],

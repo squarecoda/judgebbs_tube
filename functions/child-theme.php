@@ -2,6 +2,8 @@
 
 namespace SquareCoda\Theme;
 
+use Timber;
+
 class Child_Theme extends Base {
 
 	public function __construct($hooks = true) {
@@ -33,6 +35,28 @@ class Child_Theme extends Base {
 
 	protected function get_asset($folder, $suffix, $type = 'url') {
 		return sprintf('%s/assets/%s/%s', ($type == 'url') ? get_stylesheet_directory_uri() : get_stylesheet_directory(), $folder, $suffix);
+	}
+
+
+	//====================
+	// Helpers
+	//====================	
+	public function get_judge_from_user($user_id = null) {
+		if(empty($user_id)) $user_id = get_current_user_id();
+
+		$judge_search = get_posts([
+			'post_type' => 'bbs-judge',
+			'posts_per_page' => 1,
+			'meta_query' => [
+				[
+					'key' => 'user_account',
+					'value' => $user_id,
+				]
+			],
+			'fields' => 'ids',
+		]);
+
+		return !empty($judge_search) ? current($judge_search) : '';
 	}
 
 	public function get_address_fields() {
@@ -141,6 +165,13 @@ class Child_Theme extends Base {
 
 		return $options;
 	}
+
+	public function show_timber_template($template, $values = []) {
+		ob_start();
+		Timber::render($template, $values);
+		return ob_get_clean();
+	}
+
 
 }
 

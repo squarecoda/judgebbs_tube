@@ -1,0 +1,46 @@
+{% set modal_id = category ~ '--' ~ id %}
+
+{% set score = '' %}
+{% if update_history|length %}
+	{% set update = update_history|first %}
+	{% set score = update.score %}
+{% endif %}
+<div class="reference-score-display {{ category }}" score="{{ score }}">
+	<div class="reference-score-display-heading">
+		<div class="category-name">{{ category|upper }}</div>
+		{% if is_admin %}
+		<div class="history scfe-modal-trigger" category="{{ category }}" update_history="{{ fn('base64_encode', fn('json_encode', update_history)) }}" class="" target="#{{ modal_id }}">
+			<span class="fas fa-clock-rotate-left"></span>
+		</div>
+
+		{% set modal_header %}
+		<div class="reference-score-modal-heading {{ category }}">
+			<div class="reference-score-modal-title">{{ category|upper }} Reference Score History</div>
+			<div class="reference-score-modal-subtitle">{{ fn('get_the_title', id) }}</div>
+		</div>
+		{% endset %}
+
+		{% include 'scfe-modal.twig' %}
+
+		{% endif %}
+	</div>
+	<div class="reference-score-display-body">
+		<div class="score-view">{{ score }}</div>
+		<form class="score-edit" category="{{ category }}">
+			<input type="number" step=".1" min="0" max="100" category="{{ category }}">
+			<button class="submit-score-edit">
+				<span class="fas fa-arrow-up-from-bracket"></span>
+			</button>
+		</form>
+	</div>
+	{% if is_admin %}
+	<div class="reference-score-display-footer">
+		<div class="edit-score-button" category="{{ category }}">
+			<span class="fas fa-edit"></span> Edit
+		</div>
+		<div class="cancel-edit-score">
+			<span class="fas fa-times"></span> Close
+		</div>
+	</div>
+	{% endif %}
+</div>

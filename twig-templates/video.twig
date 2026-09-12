@@ -1,0 +1,11 @@
+{% if video_id and not video_url %}
+	{% set video_url = '' %}
+
+	{% if video_type == 'vimeo' %}
+		{% set video_url = 'https://player.vimeo.com/video/' ~ video_id %}
+	{% elseif video_type == 'youtube' %}
+		{% set video_url = 'https://www.youtube.com/embed/' ~ video_id %}
+	{% endif %}
+{% endif %}
+
+{{ video_url ? fn('do_shortcode', '[sc_video_embed link="' ~ video_url ~ '"]')}}

@@ -73,7 +73,7 @@ class Contestants extends Child_Theme {
 		$fields = [
 			'contestant_type' => [
 				'type' => 'select',
-				'select_options' => $this->get_contestant_type_options(),
+				'select_options' => self::get_contestant_type_options(),
 				'styles' => [
 					'width' => '25%',
 				],
@@ -83,7 +83,7 @@ class Contestants extends Child_Theme {
 			],
 			'contestant_voicing' => [
 				'type' => 'select',
-				'select_options' => $this->get_contestant_voicing_options(),
+				'select_options' => self::get_contestant_voicing_options(),
 				'styles' => [
 					'width' => '25%',
 				],
@@ -96,7 +96,7 @@ class Contestants extends Child_Theme {
 		return $this->encode_json(apply_filters(sprintf('%s/%s/fields', $this->theme_slug, $this->module_slug), $fields, $edit));
 	}
 
-	public function get_contestant_type_options() {
+	static public function get_contestant_type_options() {
 		$labels = [
 			'Quartet',
 			'Chorus',
@@ -111,7 +111,7 @@ class Contestants extends Child_Theme {
 		return $options;
 	}
 
-	public function get_contestant_voicing_options() {
+	static public function get_contestant_voicing_options() {
 		$labels = [
 			'TTBB',
 			'SATB',
@@ -124,6 +124,20 @@ class Contestants extends Child_Theme {
 		}
 
 		return $options;
+	}
+
+	static public function static_get_contestant_type_display($post_id) {
+		$value = get_post_meta($post_id, 'contestant_type', true);
+		$options = self::get_contestant_type_options();
+
+		return !empty($options[$value]) ? $options[$value] : $value;
+	}
+
+	static public function static_get_contestant_voicing_display($post_id) {
+		$value = get_post_meta($post_id, 'contestant_voicing', true);
+		$options = self::get_contestant_voicing_options();
+
+		return !empty($options[$value]) ? $options[$value] : $value;
 	}
 
 }
