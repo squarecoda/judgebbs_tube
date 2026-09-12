@@ -279,6 +279,50 @@ class Performances extends Child_Theme {
 			],
 		]);
 
+		if(current_user_can('administrator')) {
+
+			$fields = array_merge($fields, [
+				'contest_scores' => [
+					'type' => 'html',
+					'label' => ' ',
+					'content' => $this->show_timber_template('contest-scores.twig'),
+				],
+				// 'contest_scores_header' => [
+				// 	'type' => 'section_header',
+				// 	'label' => 'Original Contest Scores',
+				// 	'instructions' => 'Visible to admins only',
+				// ],
+				// 'contest_score_overall' => [
+				// 	'type' => 'number',
+				// 	'label' => 'Overall',
+				// 	'styles' => [
+				// 		'width' => '25%',
+				// 	],
+				// ],
+				// 'contest_score_mus' => [
+				// 	'type' => 'number',
+				// 	'label' => 'MUS',
+				// 	'styles' => [
+				// 		'width' => '25%',
+				// 	],
+				// ],
+				// 'contest_score_per' => [
+				// 	'type' => 'number',
+				// 	'label' => 'PER',
+				// 	'styles' => [
+				// 		'width' => '25%',
+				// 	],
+				// ],
+				// 'contest_score_sng' => [
+				// 	'type' => 'number',
+				// 	'label' => 'SNG',
+				// 	'styles' => [
+				// 		'width' => '25%',
+				// 	],
+				// ],
+			]);
+		}
+
 		$fields = array_merge($fields, [
 			'contest_divider' => [
 				'type' => 'divider',

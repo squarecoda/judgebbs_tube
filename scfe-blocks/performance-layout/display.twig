@@ -1,10 +1,11 @@
 <div class="performance-display">
 
-	<div class="video large">
+	<div class="video full">
 		{% include 'video.twig' %}
 	</div>
 
 	<div class="data">
+		{{ fn('get_the_title') }}
 	</div>
 
 	<div class="scores large">

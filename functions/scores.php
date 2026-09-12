@@ -8,13 +8,28 @@
 
 		$scores_array = [];
 		foreach($categories as $category) {
-			$scores_array[$category] = readable_score_history(get_reference_score_history($post_id, $category));
+			$scores_array[$category] = readable_score_history(get_reference_score_history($post_id, $category), $post_id, $category);
 		}
 
 		return $scores_array;
 	}
 
-	function readable_score_history($history) {
+	function get_contest_scores($post_id) {
+		$categories = [
+			'mus',
+			'per',
+			'sng',
+		];
+
+		$scores_array = [];
+		foreach($categories as $category) {
+			$scores_array[$category] = get_post_meta($post_id, sprintf('contest_score_%s', $category), true);
+		}
+
+		return $scores_array;
+	}
+
+	function readable_score_history($history, $post_id, $category) {
 		if(empty($history)) return $history;
 
 		foreach($history as $index => $entry) {
@@ -31,6 +46,14 @@
 			}
 
 			$history[$index]['updated_by'] = $updated_by;
+		}
+
+		$contest_score = get_post_meta($post_id, sprintf('contest_score_%s', $category), true);
+		if(!empty($contest_score)) {
+			$history[] = [
+				'type' => 'contest_score',
+				'score' => $contest_score,
+			];
 		}
 
 		return $history;
@@ -75,5 +98,5 @@
 
 		update_post_meta($post_id, sprintf('%s_scores', $category), json_encode($history));
 
-		return readable_score_history($history);
+		return readable_score_history($history, $post_id, $category);
 	}

@@ -1,0 +1,10 @@
+<div class="reference-score-display {{ category }} editing" score="{{ score }}">
+	<div class="reference-score-display-heading">
+		<div class="category-name">{{ category|upper }}</div>
+	</div>
+	<div class="reference-score-display-body">
+		<div class="score-edit">
+			<input class="score-value" name="sc-fields[contest_score_{{ category }}]" type="number" step=".1" min="0" max="100" value="{{ score }}" category="{{ category }}">
+		</div>
+	</div>
+</div>

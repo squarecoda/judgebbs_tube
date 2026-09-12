@@ -24,6 +24,18 @@ jQuery(document).ready(function($){
 			}
 		});	
 
+		$('.reference-score-wrapper.contest-scores .reference-score-display .score-edit .score-value').on('keydown', function(e){
+			if(e.originalEvent.key == 'Enter') {
+				e.preventDefault();
+			}
+
+			const el = $(this);
+			setTimeout(function(){
+				el.closest('.reference-score-display').attr('score', el.val());
+				updateOverallScore();
+			}, 500);
+		});	
+
 		function updateReferenceScore(el) {
 			const parentDiv = el.closest('.reference-score-display');
 
@@ -82,7 +94,11 @@ jQuery(document).ready(function($){
 			html += '<tr><th>Score</th><th>Updated By</th><th>Timestamp</th></tr>';
 			$.each(historyJson, function(i, entry){
 				console.log(i, entry)
-				html += '<tr><td>' + entry.score + '</td><td>' + entry.updated_by + '</td><td>' + entry.timestamp + '</td></tr>';
+				if(entry.type == 'contest_score') {
+					html += '<tr class="contest-score"><td>' + entry.score + '</td><td colspan="2">Contest Score</td></tr>';
+				} else {
+					html += '<tr><td>' + entry.score + '</td><td>' + entry.updated_by + '</td><td>' + entry.timestamp + '</td></tr>';
+				}
 			})
 
 			html = '<table class="reference-score-table ' + category + '">' + html + '</table>';

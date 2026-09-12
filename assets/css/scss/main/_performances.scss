@@ -52,7 +52,7 @@
 				padding-top: calc(var(--inner-padding) - var(--border-width));
 				position: relative;
 				.history {
-					--size: 24px;
+					--size: 28px;
 					position: absolute;
 					right: var(--border-width);
 					top: 50%;
@@ -60,8 +60,7 @@
 					height: var(--size);
 					width: var(--size);
 					border-radius: 100%;
-					background: white;
-					color: #445;
+					background: rgba(black, 35%);
 					font-size: 14px;
 					@include flex_center;
 					cursor: pointer;
@@ -87,6 +86,11 @@
 						padding: 0 calc(var(--inner-padding) + 2px);
 						cursor: pointer;
 						font-size: 16px
+					}
+				}
+				input[type="number"] {
+					&::-webkit-inner-spin-button {
+						display: none;
 					}
 				}
 			}
@@ -125,6 +129,34 @@
 				.cancel-edit-score {
 					display: flex;
 				}
+			}
+		}
+	}
+	&.contest-scores {
+		background: #889;
+		color: white;
+		.reference-score-wrapper-heading {
+			border-color: rgba(white, .25);
+			.heading-subtitle {
+				font-size: 13px;
+				font-style: italic;
+				font-weight: 500;
+				line-height: 1;
+				margin-top: 5px;
+			}
+		}
+		.reference-score-display {
+			background: white;
+			.reference-score-display-body {
+				color: #445;
+			}
+		}
+				
+		.score-edit {
+			padding: 0 var(--inner-padding);
+			input[type="number"] {
+				font-size: 20px !important;
+				text-align: center;
 			}
 		}
 	}
@@ -167,7 +199,8 @@ body.wp-admin .reference-score-wrapper {
 	}
 	.reference-score-table {
 		--color: #445;
-		border: 3px solid var(--color);
+		--border-width: 3px;
+		border: var(--border-width) solid var(--color);
 		border-top: none;
 		border-collapse: collapse;
 		font-size: 16px;
@@ -181,6 +214,13 @@ body.wp-admin .reference-score-wrapper {
 		th {
 			background: var(--color);
 			color: white;
+		}
+		tr.contest-score {
+			td {
+				background: var(--color);
+				color: white;
+				padding: calc(6px - var(--border-width)) 10px !important;
+			}
 		}
 	}
 }

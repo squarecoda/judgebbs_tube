@@ -1,0 +1,30 @@
+{% set id = fn('get_the_id') %}
+
+{% set is_admin = false %}
+{% set is_admin = fn('current_user_can', 'administrator') %}
+
+{% set contest_scores = fn('get_contest_scores', id) %}
+
+<div class="reference-score-wrapper contest-scores" post_id="{{ id }}">
+
+	<div class="reference-score-wrapper-heading">Contest Scores <div class="heading-subtitle">Only visible to admins</div></div>
+
+	<div class="reference-score-display-wrapper">
+
+		{# Overall Score #}
+		<div class="reference-score-display overall" title="Automatically calculated">
+			<div class="reference-score-display-heading">Overall</div>
+			<div class="reference-score-display-body">
+				<div class="score-view">
+					<span class="fas fa-cog fa-spin"></span>
+				</div>
+			</div>
+		</div>
+
+	{% for category, score in contest_scores %}
+		{% include 'contest-score.twig' %}
+	{% endfor %}
+	</div>
+
+</div>
+
