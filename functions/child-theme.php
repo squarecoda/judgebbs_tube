@@ -166,6 +166,21 @@ class Child_Theme extends Base {
 		return $options;
 	}
 
+	static public function get_contestant_age_options() {
+		$labels = [
+			'Adult',
+			'Senior',
+			'Youth',
+		];
+
+		$options = [];
+		foreach($labels as $label) {
+			$options[strtolower($label)] = $label;
+		}
+
+		return $options;
+	}
+
 	public function show_timber_template($template, $values = []) {
 		ob_start();
 		Timber::render($template, $values);

@@ -167,12 +167,12 @@ body.wp-admin .reference-score-wrapper {
 	box-shadow: none;
 }
 
-.performance-display {
+.video-display {
 	@include flex_columns(3, 30px);
 	row-gap: 60px;
 }
 
-.single-bbs-performance {
+.single-bbs-video {
 	.entry-title {
 		display: none;
 	}

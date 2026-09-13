@@ -32,28 +32,36 @@
 	function readable_score_history($history, $post_id, $category) {
 		if(empty($history)) return $history;
 
+		$has_contest_score = false;
 		foreach($history as $index => $entry) {
-			$history[$index]['timestamp'] = sprintf('%s', wp_date('n/j/Y g:i:s a T', round($entry['time'] / 1000)));
+			if(!empty($entry['type']) && $entry['type'] == 'contest_score') {
+				$has_contest_score = true;
+			} else {
+				$history[$index]['timestamp'] = sprintf('%s', wp_date('n/j/Y g:i:s a T', round($entry['time'] / 1000)));
 
-			$updated_by = '';
-			//First get judge record name
-			if(!empty($entry['judge_id'])) $updated_by = get_the_title($entry['judge_id']);
+				$updated_by = '';
+				//First get judge record name
+				if(!empty($entry['judge_id'])) $updated_by = get_the_title($entry['judge_id']);
 
-			//Next get user record name
-			if(empty($updated_by) && !empty($entry['user_id'])) {
-				$user = get_user_by('ID', $entry['user_id']);
-				$updated_by = !empty($user->data->display_name) ? $user->data->display_name : '';
+				//Next get user record name
+				if(empty($updated_by) && !empty($entry['user_id'])) {
+					$user = get_user_by('ID', $entry['user_id']);
+					$updated_by = !empty($user->data->display_name) ? $user->data->display_name : '';
+				}
+
+				$history[$index]['updated_by'] = $updated_by;
 			}
-
-			$history[$index]['updated_by'] = $updated_by;
 		}
 
-		$contest_score = get_post_meta($post_id, sprintf('contest_score_%s', $category), true);
-		if(!empty($contest_score)) {
-			$history[] = [
-				'type' => 'contest_score',
-				'score' => $contest_score,
-			];
+		if(!$has_contest_score) {
+			$contest_score = get_post_meta($post_id, sprintf('contest_score_%s', $category), true);
+			if(!empty($contest_score)) {
+				$history[] = [
+					'type' => 'contest_score',
+					'score' => $contest_score,
+					'time' => 0,
+				];
+			}
 		}
 
 		return $history;
@@ -68,6 +76,15 @@
 			usort($decoded_value, function($a, $b){
 				return $b['time'] <=> $a['time'];
 			});
+		} else {
+			$contest_score = get_post_meta($post_id, sprintf('contest_score_%s', $category), true);
+			if(!empty($contest_score)) {
+				$decoded_value[] = [
+					'type' => 'contest_score',
+					'score' => $contest_score,
+					'time' => 0,
+				];
+			}
 		}
 
 		return $decoded_value;
@@ -96,7 +113,16 @@
 
 		array_unshift($history, $new_score);
 
-		update_post_meta($post_id, sprintf('%s_scores', $category), json_encode($history));
+		$history_to_save = [];
+		foreach($history as $index => $entry) {
+			if(!empty($entry['type']) && $entry['type'] == 'contest_score') {
+				// Do nothing if contest_score
+			} else {
+				$history_to_save[] = $entry;
+			}
+		}
+
+		update_post_meta($post_id, sprintf('%s_scores', $category), json_encode($history_to_save));
 
 		return readable_score_history($history, $post_id, $category);
 	}

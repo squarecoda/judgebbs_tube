@@ -17,14 +17,14 @@ class Tube_Dashboard extends Tube_Category {
 }
 new Tube_Dashboard;
 
-class Judge_Layout extends Tube_Category {
+class Judge_Detail_Layout extends Tube_Category {
 	public $class_name = __CLASS__;
 	public $fields = [];
 }
-new Judge_Layout;
+new Judge_Detail_Layout;
 
-class Performance_Layout extends Tube_Category {
+class Video_Detail_Layout extends Tube_Category {
 	public $class_name = __CLASS__;
 	public $fields = [];
 }
-new Performance_Layout;
+new Video_Detail_Layout;

@@ -71,9 +71,9 @@ class Contestants extends Child_Theme {
 		], $attributes));
 
 		$fields = [
-			'contestant_type' => [
-				'type' => 'select',
-				'select_options' => self::get_contestant_type_options(),
+			'type' => [
+				'type' => 'radio',
+				'radio_options' => $this->get_type_options(),
 				'styles' => [
 					'width' => '25%',
 				],
@@ -81,14 +81,38 @@ class Contestants extends Child_Theme {
 					'required' => true,
 				],
 			],
-			'contestant_voicing' => [
-				'type' => 'select',
-				'select_options' => self::get_contestant_voicing_options(),
+			'voicing' => [
+				'type' => 'radio',
+				'radio_options' => $this->get_voicing_options(),
 				'styles' => [
 					'width' => '25%',
 				],
 				'attributes' => [
 					'required' => true,
+				],
+			],
+			'age' => [
+				'type' => 'radio',
+				'radio_options' => $this->get_contestant_age_options(),
+				'attributes' => [
+					'required' => true,
+				],
+				'styles' => [
+					'width' => '25%',
+				],
+			],
+			'contestant_size' => [
+				'type' => 'number',
+				'styles' => [
+					'width' => '25%',
+				],
+				'conditional_rules' => [
+					'hide' => [
+						[
+							'key' => 'type',
+							'value' => 'quartet',
+						],
+					],
 				],
 			],
 		];
@@ -96,7 +120,7 @@ class Contestants extends Child_Theme {
 		return $this->encode_json(apply_filters(sprintf('%s/%s/fields', $this->theme_slug, $this->module_slug), $fields, $edit));
 	}
 
-	static public function get_contestant_type_options() {
+	static public function get_type_options() {
 		$labels = [
 			'Quartet',
 			'Chorus',
@@ -111,7 +135,7 @@ class Contestants extends Child_Theme {
 		return $options;
 	}
 
-	static public function get_contestant_voicing_options() {
+	static public function get_voicing_options() {
 		$labels = [
 			'TTBB',
 			'SATB',
@@ -126,18 +150,33 @@ class Contestants extends Child_Theme {
 		return $options;
 	}
 
-	static public function static_get_contestant_type_display($post_id) {
-		$value = get_post_meta($post_id, 'contestant_type', true);
-		$options = self::get_contestant_type_options();
+	static public function static_get_type_display($post_id) {
+		$value = get_post_meta($post_id, 'type', true);
+		$options = self::get_type_options();
 
 		return !empty($options[$value]) ? $options[$value] : $value;
 	}
 
-	static public function static_get_contestant_voicing_display($post_id) {
-		$value = get_post_meta($post_id, 'contestant_voicing', true);
-		$options = self::get_contestant_voicing_options();
+	static public function static_get_voicing_display($post_id) {
+		$value = get_post_meta($post_id, 'voicing', true);
+		$options = self::get_voicing_options();
 
 		return !empty($options[$value]) ? $options[$value] : $value;
+	}
+
+	static public function static_get_age_display($post_id) {
+		$value = get_post_meta($post_id, 'age', true);
+		$options = self::get_contestant_age_options();
+
+		return !empty($options[$value]) ? $options[$value] : $value;
+	}
+
+	static public function static_get_size_display($post_id) {
+		$type = get_post_meta($post_id, 'type', true);
+		if($type == 'quartet') return 4;
+
+		$value = get_post_meta($post_id, 'contestant_size', true);
+		return $value;
 	}
 
 }

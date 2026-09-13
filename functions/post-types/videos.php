@@ -2,13 +2,13 @@
 
 namespace SquareCoda\Theme;
 
-class Performances extends Child_Theme {
+class Videos extends Child_Theme {
 
-	public $module_slug = 'performances';
-	public $post_type_slug = 'performance';
-	public $post_type = 'bbs-performance';
-	public $singular = 'Performance';
-	public $plural = 'Performances';
+	public $module_slug = 'video';
+	public $post_type_slug = 'video';
+	public $post_type = 'bbs-video';
+	public $singular = 'Video';
+	public $plural = 'Videos';
 
 	public function __construct($run_filters = true) {
 		parent::set_props();
@@ -103,7 +103,7 @@ class Performances extends Child_Theme {
 	public function update_title_when_data_changed($post_id) {
 		// return;
 		if(get_post_type($post_id) == $this->post_type) {
-			$full_name = $this->get_full_performance_name($post_id);
+			$full_name = $this->get_full_name($post_id);
 			if(get_the_title($post_id) != $full_name) {
 				wp_update_post([
 					'ID' => $post_id,
@@ -114,13 +114,13 @@ class Performances extends Child_Theme {
 		}
 	}
 
-	public function get_full_performance_name($post_id) {
+	public function get_full_name($post_id) {
 		$fields = [
 			'song_title',
 			'contestant',
 			'contest_district',
 			'contest_type',
-			'performance_date',
+			'video_date',
 		];
 
 		foreach($fields as $field) $$field = get_post_meta($post_id, $field, true);
@@ -133,13 +133,13 @@ class Performances extends Child_Theme {
 		if(!empty($contestant)) $contestant = get_the_title($contestant);
 		if(!empty($district_options[$contest_district])) $contest_district = $district_options[$contest_district];
 		if(!empty($type_options[$contest_type])) $contest_type = $type_options[$contest_type];
-		if(!empty($performance_date)) $performance_date = date('n/j/Y', strtotime($performance_date));
+		if(!empty($video_date)) $video_date = date('n/j/Y', strtotime($video_date));
 
-		$performance_name = in_array($contest_type, ['District', 'Prelims', 'Divisional']) 
+		$event_name = in_array($contest_type, ['District', 'Prelims', 'Divisional']) 
 			? sprintf('%s %s', $contest_district, $contest_type) 
 			: sprintf('%s %s', $contest_type, 'Contest');
 
-		return sprintf('%s &ndash; %s (%s %s)', $song_title, $contestant, $performance_name, $performance_date);
+		return sprintf('%s &ndash; %s (%s %s)', $song_title, $contestant, $event_name, $video_date);
 	}
 
 	public function show_name_instead_of_title($post) {
@@ -221,7 +221,7 @@ class Performances extends Child_Theme {
 							'value' => 'url',
 						],
 					],
-				]
+				],
 			],
 		];
 
@@ -241,85 +241,86 @@ class Performances extends Child_Theme {
 					'placeholder' => 'Type contestant name',
 				],
 				'additional_fields' => [
-					'contestant_type' => ['function' => 'static_get_contestant_type_display', 'class' => '\\SquareCoda\\Theme\\Contestants'],
-					'contestant_voicing' => ['function' => 'static_get_contestant_voicing_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'type' => ['function' => 'static_get_type_display', 'class' => '\\SquareCoda\\Theme\\Contestants'],
+					'voicing' => ['function' => 'static_get_voicing_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'age' => ['function' => 'static_get_age_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'size' => ['function' => 'static_get_size_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
 				],
-				'result_template' => '<div class="title">{{title}}</div><div class="meta"></div><div class="meta"><span class="description">Voicing: </span><span class="value">{{contestant_voicing}}</span></div><div class="meta"><span class="description">Type: </span><span class="value">{{contestant_type}}</span></div>', 
+				'result_template' => '<div class="title">{{title}}</div><div class="meta"></div><div class="meta"><span class="description">Voicing: </span><span class="value">{{voicing}}</span></div><div class="meta"><span class="description">Type: </span><span class="value">{{type}}</span></div><div class="meta"><span class="description">Contestant Size: </span><span class="value">{{size}}</span></div><div class="meta"><span class="description">Age: </span><span class="value">{{age}}</span></div>',
 				'multiple' => false,
+				'add_new' => true,
+				'styles' => [
+					'width' => '20%'
+				],
+			],
+			'use_custom_size' => [
+				'type' => 'true-false',
+				'label' => 'Custom Contestant Size?',
 				'styles' => [
 					'width' => '25%'
-				],
+				],				
 			],
-			'contestant_size' => [
+			'custom_contestant_size' => [
 				'type' => 'number',
+				'label' => 'Contestant Size',
 				'styles' => [
-					'width' => '25%',
+					'width' => '15%',
+				],
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'use_custom_size',
+							'value' => 'on',
+						],
+					],
 				],
 			],
-			'contestant_age' => [
-				'type' => 'radio',
-				'radio_options' => $this->get_contestant_age_options(),
+			'use_custom_age' => [
+				'type' => 'true-false',
+				'label' => 'Custom Contestant Age?',
 				'styles' => [
-					'width' => '25%',
-				],
+					'width' => '25%'
+				],				
+			],
+			'custom_contestant_age' => [
+				'type' => 'radio',
+				'label' => 'Contestant Age',
+				'radio_options' => $this->get_contestant_age_options(),
 				'attributes' => [
 					'required' => true,
 				],
+				'styles' => [
+					'width' => '15%',
+				],
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'use_custom_age',
+							'value' => 'on',
+						],
+					],
+				],
 			],
 		]);
 
-		$fields = array_merge($fields, [
-			'scores_divider' => [
-				'type' => 'divider',
-			],
-			'reference_scores' => [
-				'type' => 'html',
-				'label' => ' ',
-				'content' => $this->show_timber_template('reference-scores.twig'),
-			],
-		]);
+		// $fields = array_merge($fields, [
+		// 	'reference_scores' => [
+		// 		'type' => 'html',
+		// 		'label' => ' ',
+		// 		'content' => $this->show_timber_template('reference-scores.twig'),
+		// 	],
+		// ]);
 
 		if(current_user_can('administrator')) {
-
 			$fields = array_merge($fields, [
+				'scores_divider' => [
+					'type' => 'divider',
+				],
 				'contest_scores' => [
 					'type' => 'html',
 					'label' => ' ',
 					'content' => $this->show_timber_template('contest-scores.twig'),
 				],
-				// 'contest_scores_header' => [
-				// 	'type' => 'section_header',
-				// 	'label' => 'Original Contest Scores',
-				// 	'instructions' => 'Visible to admins only',
-				// ],
-				// 'contest_score_overall' => [
-				// 	'type' => 'number',
-				// 	'label' => 'Overall',
-				// 	'styles' => [
-				// 		'width' => '25%',
-				// 	],
-				// ],
-				// 'contest_score_mus' => [
-				// 	'type' => 'number',
-				// 	'label' => 'MUS',
-				// 	'styles' => [
-				// 		'width' => '25%',
-				// 	],
-				// ],
-				// 'contest_score_per' => [
-				// 	'type' => 'number',
-				// 	'label' => 'PER',
-				// 	'styles' => [
-				// 		'width' => '25%',
-				// 	],
-				// ],
-				// 'contest_score_sng' => [
-				// 	'type' => 'number',
-				// 	'label' => 'SNG',
-				// 	'styles' => [
-				// 		'width' => '25%',
-				// 	],
-				// ],
 			]);
 		}
 
@@ -327,7 +328,7 @@ class Performances extends Child_Theme {
 			'contest_divider' => [
 				'type' => 'divider',
 			],
-			'performance_date' => [
+			'video_date' => [
 				'type' => 'datepicker',
 				'styles' => [
 					'width' => '25%',
@@ -409,21 +410,6 @@ class Performances extends Child_Theme {
 		return $options;
 	}
 
-	public function get_contestant_age_options() {
-		$labels = [
-			'Adult',
-			'Senior',
-			'Youth',
-		];
-
-		$options = [];
-		foreach($labels as $label) {
-			$options[strtolower($label)] = $label;
-		}
-
-		return $options;
-	}
-
 	public function get_contest_type_options() {
 		$labels = [
 			'International',
@@ -459,4 +445,4 @@ class Performances extends Child_Theme {
 
 }
 
-new Performances;
+new Videos;
