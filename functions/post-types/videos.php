@@ -474,8 +474,6 @@ class Videos extends Child_Theme {
 	}
 
 	public function process_fields_after_import($post_id) {
-		error_log($post_id);
-
 		//Contestants
 		$this->process_contestant_after_import($post_id);
 
