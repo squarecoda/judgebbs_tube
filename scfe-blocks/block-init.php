@@ -17,6 +17,12 @@ class Tube_Dashboard extends Tube_Category {
 }
 new Tube_Dashboard;
 
+class Search_Videos extends Tube_Category {
+	public $class_name = __CLASS__;
+	public $fields = [];	
+}
+new Search_Videos;
+
 class Judge_Detail_Layout extends Tube_Category {
 	public $class_name = __CLASS__;
 	public $fields = [];

@@ -101,6 +101,21 @@ class Child_Theme extends Base {
 		return $fields;
 	}
 
+	public function get_pagination_array($query) {
+		$paged = $query->query['paged'];
+		$posts_per_page = $query->query['posts_per_page'];
+
+		$start_post = 1 + ($paged - 1) * $posts_per_page;
+		$end_post = min($query->found_posts, $paged * $posts_per_page);
+
+		$prev_page = $paged - 1 >= 1 ? $paged - 1 : '';
+		$next_page = $paged + 1 <= $query->max_num_pages ? $paged + 1 : '';
+
+		$found_posts = $query->found_posts;
+		
+		return compact('paged', 'start_post', 'end_post', 'prev_page', 'next_page', 'found_posts');
+	}
+
 	public function get_full_name($post_id) {
 		$fields = [
 			'prefix',

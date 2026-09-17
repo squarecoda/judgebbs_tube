@@ -3,6 +3,7 @@
 namespace SquareCoda\Theme;
 
 use DateTime;
+use WP_Query;
 
 class Videos extends Child_Theme {
 
@@ -91,6 +92,38 @@ class Videos extends Child_Theme {
 	//======================
 	// Get Posts
 	//======================
+	function get_search_results() {
+		$args = [
+			'post_type' => $this->post_type,
+			'posts_per_page' => 100,
+			'paged' => get_query_var('paged') ?: 1,
+			'fields' => 'ids',
+		];
+
+		$query = new WP_Query($args);
+
+		$results = [];
+		foreach($query->posts as $post_id) {
+			$results[] = $this->get_post_array($post_id);
+		}
+
+		$pagination = $this->get_pagination_array($query);
+
+		return compact('results', 'pagination');		
+	}
+
+	function get_post_array($post_id) {
+		$contestant_obj = new Contestants(false);
+		$contestant_id = $this->get_field('contestant', $post_id);
+
+		return [
+			'id' => $post_id,
+			'title' => get_the_title($post_id),
+			'url' => get_the_permalink($post_id),
+			'contestant' => $contestant_obj->get_post_array($contestant_id),
+			'song_title' => $this->get_field('song_title', $post_id),
+		];
+	}
 
 
 	//======================

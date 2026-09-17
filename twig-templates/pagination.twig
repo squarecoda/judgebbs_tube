@@ -1,0 +1,32 @@
+{% if pagination.prev_page or pagination.next_page %}
+<div class="pagination">
+
+	<div class="pagination-buttons">
+		{% if pagination.prev_page %}
+		<a class="pagination-button prev" href="{{ permalink ?: fn('get_the_permalink') }}{{ pagination.prev_page > 1 ? 'page/' ~ pagination.prev_page ~  '/' }}">
+			<span class="fas fa-chevron-left"></span>
+		</a>
+		{% else %}
+		<a class="pagination-button prev disabled">
+			<span class="fas fa-chevron-left"></span>
+		</a>
+		{% endif %}
+
+		{% if pagination.next_page %}
+		<a class="pagination-button prev" href="{{ permalink ?: fn('get_the_permalink') }}page/{{ pagination.next_page }}/">
+			<span class="fas fa-chevron-right"></span>
+		</a>
+		{% else %}
+		<a class="pagination-button prev disabled">
+			<span class="fas fa-chevron-right"></span>
+		</a>
+		{% endif %}
+
+	</div>
+
+	{% if pagination.start_post and pagination.end_post %}
+	<div class="results-amount">{{ pagination.start_post }} - {{ pagination.end_post }} {{ pagination.found_posts ? 'of ' ~ pagination.found_posts }}</div>
+	{% endif %}
+
+</div>
+{% endif %}

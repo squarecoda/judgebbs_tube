@@ -49,6 +49,20 @@ class Contestants extends Child_Theme {
 		];
 	}
 
+	//======================
+	// Get Posts
+	//======================
+	function get_post_array($post_id) {
+		return [
+			'id' => $post_id,
+			'title' => get_the_title($post_id),
+			'url' => get_the_permalink($post_id),
+			'voicing' => self::static_get_voicing_display($post_id),
+			'age' => self::static_get_age_display($post_id),
+			'size' => self::static_get_size_display($post_id),
+		];
+	}
+
 
 	//======================
 	// Post Type Edit Pages

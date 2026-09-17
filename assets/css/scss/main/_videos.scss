@@ -224,3 +224,25 @@ body.wp-admin .reference-score-wrapper {
 		}
 	}
 }
+
+.video-list {
+	@include flex_single_column(20px)
+}
+
+.pagination {
+	@include flex_row_centered(15px);
+	.pagination-buttons {
+		@include flex_row_centered(2px);
+		.pagination-button {
+			--size: 40px;
+			background: #445;
+			color: white;
+			width: var(--size);
+			height: var(--size);
+			@include flex_center;
+			&.disabled {
+				opacity: .3;
+			}
+		}
+	}
+}
