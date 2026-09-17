@@ -1,8 +1,10 @@
 <div class="video-display">
 
+	{% if video_url %}
 	<div class="video full">
-		{% include 'video.twig' %}
+		{{ video_url ? fn('do_shortcode', '[sc_video_embed link="' ~ video_url ~ '"]') }}
 	</div>
+	{% endif %}
 
 	<div class="data">
 		{{ fn('get_the_title') }}

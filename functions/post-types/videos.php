@@ -2,6 +2,8 @@
 
 namespace SquareCoda\Theme;
 
+use DateTime;
+
 class Videos extends Child_Theme {
 
 	public $module_slug = 'video';
@@ -32,6 +34,12 @@ class Videos extends Child_Theme {
 
 			// Custom Fields
 			add_shortcode(sprintf('sc_meta_fields_%s', $this->post_type), [$this, 'custom_fields']);
+
+			// Imports
+			add_filter(sprintf('%s/%s/%s/%s', 'sc_field_editor', 'imports', $this->post_type, 'ignore_headers'), [$this, 'ignore_import_headers']);
+			add_action(sprintf('%s/%s/%s/%s/%s', 'sc_field_editor', 'imports', 'process', $this->post_type, 'contestant'), [$this, 'process_contestant_field'], 10, 3);
+			add_action(sprintf('%s/%s/%s/%s/%s', 'sc_field_editor', 'imports', 'process', $this->post_type, 'contest_score_mus'), [$this, 'process_scores_field'], 10, 3);
+			add_action(sprintf('%s/%s/%s/%s', 'sc_field_editor', 'imports', 'after_create_post', $this->post_type), [$this, 'process_fields_after_import']);
 		}
 	}
 
@@ -51,7 +59,7 @@ class Videos extends Child_Theme {
 				'singular' => $this->singular,
 				'plural' => $this->plural,
 				'rewrite' => $this->post_type_slug,
-				'menu_icon' => 'dashicons-microphone',
+				'menu_icon' => 'dashicons-video-alt3',
 				'supports' => ['none'],
 			],
 		];
@@ -101,7 +109,6 @@ class Videos extends Child_Theme {
 	// Field Formatting
 	//======================
 	public function update_title_when_data_changed($post_id) {
-		// return;
 		if(get_post_type($post_id) == $this->post_type) {
 			$full_name = $this->get_full_name($post_id);
 			if(get_the_title($post_id) != $full_name) {
@@ -169,66 +176,6 @@ class Videos extends Child_Theme {
 					'required' => true,
 				],
 			],
-			'song_style' => [
-				'type' => 'select',
-				'select_options' => $this->get_song_style_options(),
-				'styles' => [
-					'width' => '20%',
-				],
-			],
-			'video_type' => [
-				'type' => 'radio',
-				'radio_options' => [
-					'vimeo' => 'Vimeo',
-					'youtube' => 'Youtube',
-					'url' => 'Full URL',
-				],
-				'styles' => [
-					'width' => '20%',
-				],
-			],
-			'video_id' => [
-				'type' => 'text',
-				'label' => 'Video ID',
-				'styles' => [
-					'width' => '35%',
-				],
-				'conditional_rules' => [
-					'show' => [
-						[
-							'key' => 'video_type',
-							'value' => 'has_value',
-						],
-					],
-					'hide' => [
-						[
-							'key' => 'video_type',
-							'value' => 'url',
-						],
-					],
-				]
-			],
-			'video_url' => [
-				'type' => 'text',
-				'label' => 'Video URL',
-				'styles' => [
-					'width' => '35%',
-				],
-				'conditional_rules' => [
-					'show' => [
-						[
-							'key' => 'video_type',
-							'value' => 'url',
-						],
-					],
-				],
-			],
-		];
-
-		$fields = array_merge($fields, [
-			'contestant_divider' => [
-				'type' => 'divider',
-			],
 			'contestant' => [
 				'type' => 'typeahead',
 				'label' => 'Contestant',
@@ -250,7 +197,21 @@ class Videos extends Child_Theme {
 				'multiple' => false,
 				'add_new' => true,
 				'styles' => [
-					'width' => '20%'
+					'width' => '25%'
+				],
+			],
+			'song_style' => [
+				'type' => 'radio',
+				'radio_options' => $this->get_song_style_options(),
+				'styles' => [
+					'width' => '25%',
+				],
+			],
+			'video_url' => [
+				'type' => 'text',
+				'label' => 'Video URL',
+				'styles' => [
+					'width' => '25%',
 				],
 			],
 			'use_custom_size' => [
@@ -258,13 +219,20 @@ class Videos extends Child_Theme {
 				'label' => 'Custom Contestant Size?',
 				'styles' => [
 					'width' => '25%'
-				],				
+				],
+			],
+			'use_custom_age' => [
+				'type' => 'true-false',
+				'label' => 'Custom Contestant Age?',
+				'styles' => [
+					'width' => '25%'
+				],
 			],
 			'custom_contestant_size' => [
 				'type' => 'number',
 				'label' => 'Contestant Size',
 				'styles' => [
-					'width' => '15%',
+					'width' => '25%',
 				],
 				'conditional_rules' => [
 					'show' => [
@@ -275,13 +243,6 @@ class Videos extends Child_Theme {
 					],
 				],
 			],
-			'use_custom_age' => [
-				'type' => 'true-false',
-				'label' => 'Custom Contestant Age?',
-				'styles' => [
-					'width' => '25%'
-				],				
-			],
 			'custom_contestant_age' => [
 				'type' => 'radio',
 				'label' => 'Contestant Age',
@@ -290,7 +251,7 @@ class Videos extends Child_Theme {
 					'required' => true,
 				],
 				'styles' => [
-					'width' => '15%',
+					'width' => '25%',
 				],
 				'conditional_rules' => [
 					'show' => [
@@ -301,20 +262,17 @@ class Videos extends Child_Theme {
 					],
 				],
 			],
-		]);
-
-		// $fields = array_merge($fields, [
-		// 	'reference_scores' => [
-		// 		'type' => 'html',
-		// 		'label' => ' ',
-		// 		'content' => $this->show_timber_template('reference-scores.twig'),
-		// 	],
-		// ]);
+		];
 
 		if(current_user_can('administrator')) {
 			$fields = array_merge($fields, [
 				'scores_divider' => [
 					'type' => 'divider',
+				],
+				'reference_scores' => [
+					'type' => 'html',
+					'label' => ' ',
+					'content' => $this->show_timber_template('reference-scores.twig'),
 				],
 				'contest_scores' => [
 					'type' => 'html',
@@ -363,11 +321,33 @@ class Videos extends Child_Theme {
 		]);
 
 		$fields = array_merge($fields, [
-			'notes_divider' => [
+			'misc_divider' => [
 				'type' => 'divider',
 			],
-			'legacy_id' => [
-				'type' => 'text',
+			'contest_set_pairing' => [
+				'type' => 'typeahead',
+				'search_type' => 'bbs-video', 
+				'search_fields' => [ 
+					'title',
+				],
+				'attributes' => [
+					'placeholder' => 'Type video name',
+				],
+				'additional_fields' => [
+					'type' => ['function' => 'static_get_type_display', 'class' => '\\SquareCoda\\Theme\\Contestants'],
+					'voicing' => ['function' => 'static_get_voicing_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'age' => ['function' => 'static_get_age_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'size' => ['function' => 'static_get_size_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+				],
+				'result_template' => '<div class="title">{{title}}</div>',
+				'multiple' => false,
+				'add_new' => false,
+				'styles' => [
+					'width' => '25%'
+				],
+			],
+			'contest_set_order' => [
+				'type' => 'number',
 				'styles' => [
 					'width' => '25%',
 				],
@@ -385,7 +365,28 @@ class Videos extends Child_Theme {
 					'rows' => 4,
 				],
 				'styles' => [
-					'width' => '50%',
+					'width' => '25%',
+				],
+			],
+		]);
+
+		$fields = array_merge($fields, [
+			'legacy_divider' => [
+				'type' => 'divider',
+			],
+			'legacy_id' => [
+				'type' => 'text',
+				'label' => 'Legacy ID',
+				'instructions' => 'ID for video from previous website',
+				'styles' => [
+					'width' => '25%',
+				],
+			],
+			'legacy_contest_set_pairing' => [
+				'type' => 'number',
+				'instructions' => 'ID for video from previous website',
+				'styles' => [
+					'width' => '25%',
 				],
 			],
 		]);
@@ -393,13 +394,175 @@ class Videos extends Child_Theme {
 		return $this->encode_json(apply_filters(sprintf('%s/%s/fields', $this->theme_slug, $this->module_slug), $fields, $edit));
 	}
 
+
+	//====================
+	// Imports
+	//====================
+	public function ignore_import_headers($headers) {
+		$headers = array_merge($headers, [
+			'contestant_age',
+			'contestant_voicing',
+			'contestant_group_size',
+			'contestant_group_type',
+		]);
+
+		$categories = ['mus', 'per', 'sng'];
+		foreach($categories as $category) {
+			$headers = array_merge($headers, [
+				sprintf('%s_ref', $category),
+				sprintf('%s_ref_updated', $category),
+				sprintf('contest_score_%s', $category),
+			]);
+		}
+
+		return $headers;
+	}
+
+	public function process_contestant_field($field_value, $field_name, $row) {
+		$contestant_search = get_posts([
+			'post_type' => 'bbs-contestant',
+			'posts_per_page' => 1,
+			'name' => $field_value,
+			'fields' => 'ids',
+		]);
+
+		if(!empty($contestant_search)) {
+			$id = current($contestant_search);
+
+			//Add contestant_size and age
+			$row_values = [
+				'age' => !empty($row['contestant_age']) ? $row['contestant_age'] : '',
+				'contestant_size' => !empty($row['contestant_group_size']) ? $row['contestant_group_size'] : '',
+			];
+
+			$field_value_array = ['id' => $id];
+			foreach($row_values as $key => $value) $field_value_array[$key] = $value;
+
+			return $this->encode_json($field_value_array);
+		} else {
+			$id = wp_insert_post([
+				'post_type' => 'bbs-contestant',
+				'post_title' => $field_value,
+				'post_status' => 'publish',
+				'meta_input' => [
+					'age' => !empty($row['contestant_age']) ? $row['contestant_age'] : '',
+					'voicing' => !empty($row['contestant_voicing']) ? $row['contestant_voicing'] : '',
+					'type' => !empty($row['contestant_group_type']) ? $row['contestant_group_type'] : '',
+					'contestant_size' => !empty($row['contestant_group_size']) ? $row['contestant_group_size'] : '',
+				],
+			]);
+
+			return $this->encode_json(compact('id'));
+		}
+	}
+
+	public function process_scores_field($field_value, $field_name, $row) {
+		$categories = ['mus', 'per', 'sng'];
+		
+		$field_value_array = [];
+		foreach($categories as $category) {
+			$field_names = [
+				sprintf('%s_ref', $category),
+				sprintf('%s_ref_updated', $category),
+				sprintf('contest_score_%s', $category),
+			];
+			foreach($field_names as $field_name) {
+				$field_value_array[$field_name] = !empty($row[$field_name]) ? $row[$field_name] : '';
+			}
+		}
+		return $this->encode_json($field_value_array);
+	}
+
+	public function process_fields_after_import($post_id) {
+		error_log($post_id);
+
+		//Contestants
+		$this->process_contestant_after_import($post_id);
+
+		//Scores
+		update_post_meta($post_id, 'imported_scores', $this->get_field('contest_score_mus', $post_id));
+		update_post_meta($post_id, 'contest_score_mus', '');
+		$this->process_scores_after_import($post_id);
+
+		//Title
+		$this->update_title_when_data_changed($post_id);
+	}
+
+	public function process_contestant_after_import($post_id) {
+		$contestant_array = $this->decode_json($this->get_field('contestant', $post_id));
+
+		//Set contestant value to id
+		update_post_meta($post_id, 'contestant', $contestant_array['id']);
+
+		//Check contestant_size and age
+		if(!empty($contestant_array['age'])) {
+			$import_value = $contestant_array['age'];
+			$post_value = $this->get_field('age', $contestant_array['id']);
+			if($import_value != $post_value) {
+				update_post_meta($post_id, 'use_custom_age', 'on');
+				update_post_meta($post_id, 'custom_contestant_age', $import_value);
+			}
+		}
+
+		if(!empty($contestant_array['contestant_size'])) {
+			$import_value = $contestant_array['contestant_size'];
+			$post_value = $this->get_field('contestant_size', $contestant_array['id']);
+			if($import_value != $post_value) {
+				update_post_meta($post_id, 'use_custom_size', 'on');
+				update_post_meta($post_id, 'custom_contestant_size', $import_value);
+
+				update_post_meta($post_id, 'use_custom_size', 'on');
+				update_post_meta($post_id, 'custom_contestant_size', $contestant_array['contestant_size']);
+			}
+		}
+	}
+
+	public function process_scores_after_import($post_id) {
+		$scores_array = $this->decode_json($this->get_field('imported_scores', $post_id));
+
+		$categories = ['mus', 'per', 'sng'];
+
+		foreach($categories as $category) {
+			//Update contest scores
+			$field_name = sprintf('contest_score_%s', $category);
+			if(!empty($scores_array[$field_name])) {
+				update_post_meta($post_id, $field_name, $scores_array[$field_name]);
+			}
+
+			$field_name = sprintf('%s_ref', $category);
+			if(!empty($scores_array[$field_name])) {
+				$score = $scores_array[$field_name];
+
+				$date_field_name = sprintf('%s_ref_updated', $category);
+
+				$time = !empty($scores_array[$date_field_name]) 
+					? 1000 * (strtotime($scores_array[$date_field_name]) - wp_timezone()->getOffset(new DateTime($scores_array[$date_field_name]))) 
+					: 'Imported';
+
+				$user_id = 'Imported';
+
+				$new_score = compact('score', 'post_id', 'category', 'time', 'user_id');
+
+				$history = [];
+				array_unshift($history, $new_score);
+
+				update_post_meta($post_id, sprintf('%s_scores', $category), json_encode($history));
+			}
+		}
+	}
+
+
+
+	//====================
+	// Helpers
+	//====================
 	public function get_song_style_options() {
 		$labels = [
 			'Uptune',
 			'Ballad',
 			'Swing',
-			'Other',
 			'Comedy',
+			'Other',
 		];
 
 		$options = [];

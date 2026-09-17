@@ -37,7 +37,9 @@
 			if(!empty($entry['type']) && $entry['type'] == 'contest_score') {
 				$has_contest_score = true;
 			} else {
-				$history[$index]['timestamp'] = sprintf('%s', wp_date('n/j/Y g:i:s a T', round($entry['time'] / 1000)));
+				$history[$index]['timestamp'] = $entry['time'] != 'Imported'
+					? sprintf('%s', wp_date('n/j/Y g:i:s a T', round($entry['time'] / 1000)))
+					: 'Imported';
 
 				$updated_by = '';
 				//First get judge record name
@@ -45,8 +47,12 @@
 
 				//Next get user record name
 				if(empty($updated_by) && !empty($entry['user_id'])) {
-					$user = get_user_by('ID', $entry['user_id']);
-					$updated_by = !empty($user->data->display_name) ? $user->data->display_name : '';
+					if($entry['user_id'] == 'Imported') {
+						$updated_by = 'Imported';
+					} else {
+						$user = get_user_by('ID', $entry['user_id']);
+						$updated_by = !empty($user->data->display_name) ? $user->data->display_name : '';
+					}
 				}
 
 				$history[$index]['updated_by'] = $updated_by;
