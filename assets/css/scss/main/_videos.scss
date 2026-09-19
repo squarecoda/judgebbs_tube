@@ -289,6 +289,28 @@ body.wp-admin .reference-score-wrapper {
 	@media (max-width: 450px) {
 		@include flex_columns(1, var(--gap));
 	}
+
+	&:has(select[name="contestant_type"] > option[value="quartet"]:checked) {
+		.input-wrapper.size {
+			display: none;
+		}
+	}
+
+
+
+	&.in-progress {
+		--gap: 10px;
+		row-gap: var(--gap);
+		> .input-wrapper {
+			padding: 15px;
+			&.complete {
+				background: rgba(mediumaquamarine, .45);
+			}
+			&.incomplete {
+				background: rgba(red, .25);
+			}
+		}
+	}
 }
 
 
@@ -297,6 +319,10 @@ body.wp-admin .reference-score-wrapper {
 }
 
 .pagination {
+	position: sticky;
+	bottom: 0;
+	padding: 30px 0;
+	background: white;
 	@include flex_row_centered(15px);
 	.pagination-buttons {
 		@include flex_row_centered(2px);

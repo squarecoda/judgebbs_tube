@@ -24,8 +24,9 @@
 	},
 	{
 		type: 'select',
-		var: 'contestant_type',
-		options: fn('SquareCoda\\Theme\\Contestants::get_type_options'),
+		var: 'voicing',
+		label: 'Contestant Voicing',
+		options: fn('SquareCoda\\Theme\\Contestants::get_voicing_options'),
 		blank_label: 'Any',
 	},
 	{
@@ -33,6 +34,12 @@
 		var: 'age',
 		label: 'Contestant Age',
 		options: fn('SquareCoda\\Theme\\Child_Theme::get_contestant_age_options'),
+		blank_label: 'Any',
+	},
+	{
+		type: 'select',
+		var: 'contestant_type',
+		options: fn('SquareCoda\\Theme\\Contestants::get_type_options'),
 		blank_label: 'Any',
 	},
 	{
@@ -50,13 +57,13 @@
 	{
 		type: 'select',
 		var: 'contest_location',
-		options: fn('SquareCoda\\Theme\\Videos::get_district_options'),
+		options: fn('SquareCoda\\Theme\\Videos::get_district_options', true),
 		blank_label: 'Any',
 	},
 	{
 		type: 'date-min-max',
 		var: 'date',
-		label: 'Contest Date',
+		label: 'Video Date',
 	},
 ] %}
 
@@ -65,7 +72,7 @@
 	<input type="hidden" name="video-search-filters">
 
 	{% for field in fields %}
-	<div class="input-wrapper {{ field.type }} {{ field.wrapper_size }}">
+	<div class="input-wrapper {{ field.var }} {{ field.type }} {{ field.wrapper_size }}">
 		{% include 'filters/' ~ field.type ~ '.twig' with field %}
 	</div>
 	{% endfor %}

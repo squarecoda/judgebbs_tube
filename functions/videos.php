@@ -9,7 +9,9 @@
 			$has_empty_vars = false;
 			$new_get_vars = [];
 			foreach($_GET as $key => $value) {
-				if(!empty($value)) {
+				$quartet_size_override = in_array($key, ['size_min', 'size_max']) && !empty($_GET['contestant_type']) && $_GET['contestant_type'] == 'quartet';
+
+				if(!empty($value) && !$quartet_size_override) {
 					$new_get_vars[$key] = $value;
 				} else {
 					$has_empty_vars = true;
@@ -17,7 +19,6 @@
 			}
 	
 			if(!empty($new_get_vars) && $has_empty_vars) {
-				// display_result(http_build_query($new_get_vars));
 				$redirect_url = sprintf('%s://%s%s?%s', $_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST'], current(explode('?', $_SERVER['REQUEST_URI'])), http_build_query($new_get_vars));
 				wp_redirect($redirect_url); exit;
 			} elseif($has_empty_vars) {
@@ -27,3 +28,28 @@
 		}
 	}
 	add_action('template_redirect', 'clear_empty_params_for_search_pages');
+
+	function update_video_hidden_fields() {
+		if(current_user_can('administrator') && !empty($_GET[__FUNCTION__]) && $_GET[__FUNCTION__] == 'true') {
+			$videos_obj = new SquareCoda\Theme\Videos(false);
+
+			$args = [
+				'post_type' => 'bbs-video',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+			];
+
+			$videos = get_posts($args);
+
+			foreach($videos as $video_id) {
+				$videos_obj->update_hidden_score_fields($video_id);
+				$videos_obj->update_hidden_contestant_fields($video_id);
+			}
+
+			display_result(count($videos));
+			display_result($videos);
+
+			wp_die();
+		}
+	}
+	add_action('admin_init', 'update_video_hidden_fields');

@@ -5,6 +5,9 @@
 	{% include 'search-filters.twig' %}
 
 	<div class="video-list">
+
+		<h3 style="margin: 0;">{{ videos.pagination.found_posts }} {{ videos.pagination.found_posts == 1 ? 'video' : 'videos'}} found</h3>
+
 		{% for video in videos.results %}
 		<div class="video-post">
 			<a href="{{ video.url }}">{{ video.contestant.title }} - {{ video.song_title }}</a>

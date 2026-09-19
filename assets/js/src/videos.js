@@ -15,6 +15,7 @@ jQuery(document).ready(function($){
 				onSelect: function(value, datepicker) {
 					let altFormat = datepicker.selectedYear.toString() + zeroPad(datepicker.selectedMonth + 1) + zeroPad(datepicker.selectedDay);
 					let hiddenField = $(this).closest('.input-wrapper').find('.datepicker-value');
+					console.log(altFormat);
 					hiddenField.val(altFormat);
 					el.change();
 				}
@@ -26,8 +27,14 @@ jQuery(document).ready(function($){
 
 	$('input.datepicker-frontend').on('change', function(){
 		let el = $(this);
-		var rawValue = !$(this).val() ? '' : $(this).val().replaceAll('-', '');
-		$(this).closest('.input-wrapper').find('.datepicker-value').val(rawValue).change();
+		
+		let hiddenValue = '';
+		if($(this).val()) {
+			const [month, day, year] = $(this).val().split('/');
+			hiddenValue = `${year}${month.padStart(2, '0')}${day.padStart(2, '0')}`;
+		}
+
+		$(this).closest('.input-wrapper').find('.datepicker-value').val(hiddenValue).change();
 		setTimeout(function(){
 			el.datepicker('destroy');
 		}, 200);

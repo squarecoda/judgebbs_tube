@@ -12,6 +12,7 @@ class Videos extends Child_Theme {
 	public $post_type = 'bbs-video';
 	public $singular = 'Video';
 	public $plural = 'Videos';
+	public $scoring_categories = ['mus', 'per', 'sng'];
 
 	public function __construct($run_filters = true) {
 		parent::set_props();
@@ -32,6 +33,8 @@ class Videos extends Child_Theme {
 			// Field Formatting
 			add_action('edit_form_after_title', [$this, 'show_name_instead_of_title'], 5);
 			add_action('sc_field_editor/after_process_fields', [$this, 'update_title_when_data_changed']);
+			add_action('sc_field_editor/after_process_fields', [$this, 'update_hidden_score_fields']);
+			add_action('sc_field_editor/after_process_fields', [$this, 'update_hidden_contestant_fields']);
 
 			// Custom Fields
 			add_shortcode(sprintf('sc_meta_fields_%s', $this->post_type), [$this, 'custom_fields']);
@@ -92,13 +95,13 @@ class Videos extends Child_Theme {
 	//======================
 	// Get Posts
 	//======================
-	function get_search_results() {
-		$args = [
+	function get_search_results($posts_per_page = 100) {
+		$args = $this->search_args([
 			'post_type' => $this->post_type,
-			'posts_per_page' => 100,
+			'posts_per_page' => $posts_per_page,
 			'paged' => get_query_var('paged') ?: 1,
 			'fields' => 'ids',
-		];
+		]);
 
 		$query = new WP_Query($args);
 
@@ -110,6 +113,132 @@ class Videos extends Child_Theme {
 		$pagination = $this->get_pagination_array($query);
 
 		return compact('results', 'pagination');		
+	}
+
+	function search_args($args) {
+		if(empty($args['meta_query'])) $args['meta_query'] = [];
+
+		//Song Title
+		if(!empty($_GET['song_title'])) {
+			$args['meta_query'][] = [
+				'key' => 'song_title',
+				'value' => $_GET['song_title'],
+				'compare' => 'LIKE',
+			];
+		}
+
+		//----- Scores -----
+
+			//Scoring Levels
+			$category = !empty($_GET['scoring_category']) ? $_GET['scoring_category'] : 'overall';
+
+			if(!empty($_GET['scoring_level_min'])) {
+				$args['meta_query'][] = [
+					'key' => sprintf('hidden__ref_score__%s', $category),
+					'value' => $_GET['scoring_level_min'],
+					'compare' => '>=',
+				];
+			}
+
+			if(!empty($_GET['scoring_level_max'])) {
+				$args['meta_query'][] = [
+					'key' => sprintf('hidden__ref_score__%s', $category),
+					'value' => $_GET['scoring_level_max'],
+					'compare' => '<=',
+				];
+			}
+
+		//------------------
+
+		//----- Contestants -----
+
+			//Contestant Name
+			if(!empty($_GET['contestant'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_name',
+					'value' => $_GET['contestant'],
+					'compare' => 'LIKE',
+				];
+			}
+
+			//Voicing
+			if(!empty($_GET['voicing'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_voicing',
+					'value' => $_GET['voicing'],
+				];
+			}
+
+			//Contestant Age
+			if(!empty($_GET['age'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_age',
+					'value' => $_GET['age'],
+				];
+			}
+
+			//Contestant Type
+			if(!empty($_GET['contestant_type'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_type',
+					'value' => $_GET['contestant_type'],
+				];
+			}
+
+			//Contestant Size
+			if(!empty($_GET['size_min'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_size',
+					'value' => $_GET['size_min'],
+					'compare' => '>=',
+				];
+			}
+
+			if(!empty($_GET['size_max'])) {
+				$args['meta_query'][] = [
+					'key' => 'hidden__contestant_size',
+					'value' => $_GET['size_max'],
+					'compare' => '<=',
+				];
+			}
+
+		//-----------------------
+
+
+		//Song Style
+		if(!empty($_GET['song_style'])) {
+			$args['meta_query'][] = [
+				'key' => 'song_style',
+				'value' => $_GET['song_style'],
+			];
+		}
+
+		//Location
+		if(!empty($_GET['contest_location'])) {
+			$args['meta_query'][] = [
+				'key' => 'contest_district',
+				'value' => $_GET['contest_location'],
+			];
+		}
+
+		//Video Date
+		if(!empty($_GET['date_min'])) {
+			$args['meta_query'][] = [
+				'key' => 'video_date',
+				'value' => $_GET['date_min'],
+				'compare' => '>=',
+			];
+		}
+
+		if(!empty($_GET['date_max'])) {
+			$args['meta_query'][] = [
+				'key' => 'video_date',
+				'value' => $_GET['date_max'],
+				'compare' => '<=',
+			];
+		}
+
+		return $args;
 	}
 
 	function get_post_array($post_id) {
@@ -144,12 +273,99 @@ class Videos extends Child_Theme {
 	public function update_title_when_data_changed($post_id) {
 		if(get_post_type($post_id) == $this->post_type) {
 			$full_name = $this->get_full_name($post_id);
-			if(get_the_title($post_id) != $full_name) {
+			if(sanitize_title(get_the_title($post_id)) != sanitize_title($full_name)) {
 				wp_update_post([
 					'ID' => $post_id,
 					'post_title' => $full_name,
 					'post_name' => '',
 				]);
+			}
+		}
+	}
+
+	public function update_hidden_score_fields($post_id) {
+		$scores = [];
+		foreach($this->scoring_categories as $category) {
+			$scores[$category] = get_reference_score_history($post_id, $category);
+		}
+
+		//----- Category specific -----
+		$score_amounts = [];
+		$score_updates = [];
+		foreach($scores as $category => $score_history) {
+			if(!empty($score_history)) {
+				$latest_score = current($score_history);
+
+				if(!empty($latest_score['score']) || $latest_score['score'] === 0) {
+					$score_amounts[] = $latest_score['score'];
+					$score_updates[] = $latest_score['time'];
+
+					//Score
+					update_post_meta($post_id, sprintf('hidden__ref_score__%s', $category), $latest_score['score']);
+
+					//Updated Date
+					update_post_meta($post_id, sprintf('hidden__ref_score__%s__%s', $category, 'updated'), !empty($latest_score['time']) ? $latest_score['time'] : 0);
+				}
+			}
+		}
+
+		//----- Overall -----
+
+		if(!empty($score_amounts)) {
+			$category = 'overall';
+	
+			//Score
+			update_post_meta($post_id, sprintf('hidden__ref_score__%s', $category), round(array_sum($score_amounts) / count($score_amounts), 1));
+
+			//Updated Date
+			update_post_meta($post_id, sprintf('hidden__ref_score__%s__%s', $category, 'updated'), max($score_updates));
+		}
+	}
+
+	public function update_hidden_contestant_fields($post_id) {
+		if(get_post_type($post_id) == $this->post_type) {
+			$fields = [
+				'contestant',
+				'custom_contestant_size',
+				'custom_contestant_age',
+			];
+			foreach($fields as $field) $$field = $this->get_field($field, $post_id);
+
+			if(!empty($contestant)) {
+				$contestant_title = get_the_title($contestant);
+
+				$contestant_fields = [
+					'voicing',
+					'type',
+					'age',
+					'contestant_size',
+				];
+				foreach($contestant_fields as $contestant_field) ${'contestant__' . $contestant_field} = $this->get_field($contestant_field, $contestant);
+
+				//Title
+				update_post_meta($post_id, sprintf('hidden__contestant_%s', 'name'), get_the_title($contestant));
+
+				//Voicing
+				$key = 'voicing';
+				$value = $contestant__voicing;
+				update_post_meta($post_id, sprintf('hidden__contestant_%s', $key), $value);
+
+				//Type
+				$key = 'type';
+				$value = $contestant__type;
+				update_post_meta($post_id, sprintf('hidden__contestant_%s', $key), $value);
+
+				//Age
+				$key = 'age';
+				$value = !empty($custom_contestant_age) ? $custom_contestant_age : $contestant__age;
+				update_post_meta($post_id, sprintf('hidden__contestant_%s', $key), $value);
+
+				//Size
+				$key = 'size';
+				$value = !empty($custom_contestant_size) 
+					? $custom_contestant_size
+					: ($contestant__type == 'quartet' ? 4 : $contestant__contestant_size);
+				update_post_meta($post_id, sprintf('hidden__contestant_%s', $key), $value);
 			}
 		}
 	}
@@ -439,8 +655,7 @@ class Videos extends Child_Theme {
 			'contestant_group_type',
 		]);
 
-		$categories = ['mus', 'per', 'sng'];
-		foreach($categories as $category) {
+		foreach($this->scoring_categories as $category) {
 			$headers = array_merge($headers, [
 				sprintf('%s_ref', $category),
 				sprintf('%s_ref_updated', $category),
@@ -490,10 +705,8 @@ class Videos extends Child_Theme {
 	}
 
 	public function process_scores_field($field_value, $field_name, $row) {
-		$categories = ['mus', 'per', 'sng'];
-		
 		$field_value_array = [];
-		foreach($categories as $category) {
+		foreach($this->scoring_categories as $category) {
 			$field_names = [
 				sprintf('%s_ref', $category),
 				sprintf('%s_ref_updated', $category),
@@ -551,9 +764,7 @@ class Videos extends Child_Theme {
 	public function process_scores_after_import($post_id) {
 		$scores_array = $this->decode_json($this->get_field('imported_scores', $post_id));
 
-		$categories = ['mus', 'per', 'sng'];
-
-		foreach($categories as $category) {
+		foreach($this->scoring_categories as $category) {
 			//Update contest scores
 			$field_name = sprintf('contest_score_%s', $category);
 			if(!empty($scores_array[$field_name])) {
