@@ -587,7 +587,7 @@ class Videos extends Child_Theme {
 	//====================
 	// Helpers
 	//====================
-	public function get_song_style_options() {
+	static public function get_song_style_options() {
 		$labels = [
 			'Uptune',
 			'Ballad',
@@ -604,7 +604,7 @@ class Videos extends Child_Theme {
 		return $options;
 	}
 
-	public function get_contest_type_options() {
+	static public function get_contest_type_options() {
 		$labels = [
 			'International',
 			'Prelims',
@@ -622,7 +622,7 @@ class Videos extends Child_Theme {
 		return $options;		
 	}
 
-	public function get_media_quality_options() {
+	static public function get_media_quality_options() {
 		$labels = [
 			'Excellent',
 			'Good',

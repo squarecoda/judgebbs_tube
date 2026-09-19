@@ -1,0 +1,10 @@
+<label>{{ label ?: var|replace({'_': ' '})|title }}</label>
+
+<div class="min-max-wrapper">
+	{% for type in ['min', 'max'] %}
+	<div class="input-wrapper">
+		<input class="datepicker-frontend" type="text" placeholder="{{ type == 'min' ? 'Start' : 'End' }}" value="{{ get[var ~ '_' ~ type] ? fn('date', 'n/j/Y', fn('strtotime', get[var ~ '_' ~ type])) }}">
+		<input name="{{ var }}_{{ type }}" class="datepicker-value" type="hidden" value="{{ get[var ~ '_' ~ type] }}">
+	</div>
+	{% endfor %}
+</div>

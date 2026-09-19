@@ -1,0 +1,10 @@
+<label for="{{ var }}">{{ label ?: var|replace({'_': ' '})|title }}</label>
+<select name="{{ var }}" {{ select_class ? 'class="' ~ select_class ~ '"' }}>
+	{% if blank_label %}
+	<option value="">{{ blank_label }}</option>
+	{% endif %}
+
+	{% for option_value, option_label in options %}
+	<option value="{{ option_value }}" {{ get[var] == option_value ? 'selected' }}>{{ option_label }}</option>
+	{% endfor %}
+</select>

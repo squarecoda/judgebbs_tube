@@ -1,0 +1,75 @@
+{% set fields = [
+	{
+		type: 'text',
+		wrapper_size: 'large',
+		var: 'song_title',
+	},
+	{
+		type: 'select',
+		var: 'scoring_category',
+		options: fn('get_scoring_categories'),
+		blank_label: 'Overall',
+		select_class: 'scoring-category-colors',
+	},
+	{
+		type: 'min-max',
+		var: 'scoring_level',
+		min: 0,
+		max: 100,
+	},
+	{
+		type: 'text',
+		var: 'contestant',
+		label: 'Contestant Name',
+	},
+	{
+		type: 'select',
+		var: 'contestant_type',
+		options: fn('SquareCoda\\Theme\\Contestants::get_type_options'),
+		blank_label: 'Any',
+	},
+	{
+		type: 'select',
+		var: 'age',
+		label: 'Contestant Age',
+		options: fn('SquareCoda\\Theme\\Child_Theme::get_contestant_age_options'),
+		blank_label: 'Any',
+	},
+	{
+		type: 'min-max',
+		var: 'size',
+		label: 'Contestant Size',
+		min: 4,
+	},
+	{
+		type: 'select',
+		var: 'song_style',
+		options: fn('SquareCoda\\Theme\\Videos::get_song_style_options'),
+		blank_label: 'Any',
+	},
+	{
+		type: 'select',
+		var: 'contest_location',
+		options: fn('SquareCoda\\Theme\\Videos::get_district_options'),
+		blank_label: 'Any',
+	},
+	{
+		type: 'date-min-max',
+		var: 'date',
+		label: 'Contest Date',
+	},
+] %}
+
+<form class="video-search-filters" method="get">
+
+	<input type="hidden" name="video-search-filters">
+
+	{% for field in fields %}
+	<div class="input-wrapper {{ field.type }} {{ field.wrapper_size }}">
+		{% include 'filters/' ~ field.type ~ '.twig' with field %}
+	</div>
+	{% endfor %}
+
+	<button style="align-self: flex-end">Submit</button>
+
+</form>

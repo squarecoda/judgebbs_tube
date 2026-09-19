@@ -1,0 +1,6 @@
+<label>{{ label ?: var|replace({'_': ' '})|title }}</label>
+<div class="min-max-wrapper">
+	{% for type in ['min', 'max'] %}
+	<input type="number" name="{{ var }}_{{ type }}" {{ min ? 'min="' ~ min ~ '"' }} {{ max ? 'max="' ~ max ~ '"' }} step="1" placeholder="{{ type }}" value="{{ get[var ~ '_' ~ type] }}">
+	{% endfor %}
+</div>

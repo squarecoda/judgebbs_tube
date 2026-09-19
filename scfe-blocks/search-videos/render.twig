@@ -1,11 +1,17 @@
 {% set videos = fn('get_video_search_results') %}
 
-<div class="video-list">
-	{% for video in videos.results %}
-	<div class="video-post">
-		<a href="{{ video.url }}">{{ video.contestant.title }} - {{ video.song_title }}</a>
-	</div>
-	{% endfor %}
-</div>
+<div class="video-search-wrapper">
+	
+	{% include 'search-filters.twig' %}
 
-{% include 'pagination.twig' with { pagination: videos.pagination } %}
+	<div class="video-list">
+		{% for video in videos.results %}
+		<div class="video-post">
+			<a href="{{ video.url }}">{{ video.contestant.title }} - {{ video.song_title }}</a>
+		</div>
+		{% endfor %}
+	</div>
+
+	{% include 'pagination.twig' with { pagination: videos.pagination } %}
+
+</div>

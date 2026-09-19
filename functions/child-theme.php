@@ -143,7 +143,7 @@ class Child_Theme extends Base {
 		return $full_name;	
 	}
 
-	public function get_district_options($include_international = false) {
+	static public function get_district_options($include_international = false) {
 		$labels = [
 			'CAR',
 			'CSD',
