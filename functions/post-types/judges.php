@@ -78,10 +78,11 @@ class Judges extends Child_Theme {
 	//======================
 	public function update_member_title_when_full_name_changed($post_id) {
 		if(get_post_type($post_id) == $this->post_type) {
-			if(get_the_title($post_id) != $this->get_full_name($post_id)) {
+			$full_name = $this->get_full_name($post_id);
+			if(!empty($full_name) && get_the_title($post_id) != $full_name) {
 				wp_update_post([
 					'ID' => $post_id,
-					'post_title' => $this->get_full_name($post_id),
+					'post_title' => $full_name,
 					'post_name' => '',
 				]);
 			}
@@ -126,7 +127,7 @@ class Judges extends Child_Theme {
 					'width' => '25%',
 				],
 				'attributes' => [
-					'required' => true,
+					// 'required' => true,
 				],
 			],
 			'middle_initial' => [
@@ -142,7 +143,7 @@ class Judges extends Child_Theme {
 					'width' => '30%',
 				],
 				'attributes' => [
-					'required' => true,
+					// 'required' => true,
 				],
 			],
 			'suffix' => [
@@ -268,8 +269,7 @@ class Judges extends Child_Theme {
 					],
 					'add_new' => true,
 					'add_new_fields' => [
-						'first_name' => 'first_name',
-						'last_name' => 'last_name',
+						'username' => 'legacy_username',
 						'email' => 'email',
 					],
 				],
@@ -281,13 +281,26 @@ class Judges extends Child_Theme {
 						'width' => '25%',
 					],
 				],
-				'candidate' => [
-					'type' => 'true-false',
+				'status' => [
+					'type' => 'select',
+					'select_options' => $this->get_judge_status_options(),
 					'styles' => [
 						'width' => '25%',
 					],
 				],
 				'year_certified' => [
+					'type' => 'text',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'legacy_id' => [
+					'type' => 'number',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'legacy_username' => [
 					'type' => 'text',
 					'styles' => [
 						'width' => '25%',
@@ -306,6 +319,11 @@ class Judges extends Child_Theme {
 			'per' => '🟢 Performance (PER)',
 			'sng' => '🔵 Singing (SNG)',
 		];
+	}
+
+	static public function static_get_category_display($post_id) {
+		$category = get_post_meta($post_id, 'judge_category', true);
+		return strtoupper($category);
 	}
 
 }

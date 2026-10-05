@@ -1,0 +1,22 @@
+{% set meta_fields = [
+	{
+		label: 'Voicing',
+		name: 'voicing'
+	},
+	{
+		label: 'Type',
+		name: 'type'
+	},
+	{
+		label: 'Contestant Size',
+		name: 'size'
+	},
+	{
+		label: 'Age',
+		name: 'age'
+	},
+] %}
+
+<div class="title">{{ '{{title}}' }}</div>
+
+{% include 'typeahead-results/_meta.twig' %}

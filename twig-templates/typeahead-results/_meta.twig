@@ -1,0 +1,5 @@
+{% for field in meta_fields %}
+<div class="meta flex">
+	<span class="description">{{ field.label }}: </span><span class="value">{{ '{{' ~ field.name ~ '}}' }}</span>
+</div>
+{% endfor %}

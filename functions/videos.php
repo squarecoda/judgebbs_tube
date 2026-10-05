@@ -17,12 +17,16 @@
 					$has_empty_vars = true;
 				}
 			}
-	
+
+			$request_scheme = !empty($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
+			$hostname = $_SERVER['HTTP_HOST'];
+
 			if(!empty($new_get_vars) && $has_empty_vars) {
-				$redirect_url = sprintf('%s://%s%s?%s', $_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST'], current(explode('?', $_SERVER['REQUEST_URI'])), http_build_query($new_get_vars));
+				$redirect_url = sprintf('%s://%s%s?%s', $request_scheme, $hostname, current(explode('?', $_SERVER['REQUEST_URI'])), http_build_query($new_get_vars));
 				wp_redirect($redirect_url); exit;
 			} elseif($has_empty_vars) {
-				$redirect_url = sprintf('%s://%s%s', $_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST'], current(explode('?', $_SERVER['REQUEST_URI'])));
+
+				$redirect_url = sprintf('%s://%s%s', $request_scheme, $hostname, current(explode('?', $_SERVER['REQUEST_URI'])));
 				wp_redirect($redirect_url); exit;
 			}
 		}
@@ -52,4 +56,4 @@
 			wp_die();
 		}
 	}
-	add_action('admin_init', 'update_video_hidden_fields');
+	// add_action('admin_init', 'update_video_hidden_fields');

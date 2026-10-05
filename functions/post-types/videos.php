@@ -4,6 +4,7 @@ namespace SquareCoda\Theme;
 
 use DateTime;
 use WP_Query;
+use Timber;
 
 class Videos extends Child_Theme {
 
@@ -443,6 +444,7 @@ class Videos extends Child_Theme {
 					'size' => ['function' => 'static_get_size_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
 				],
 				'result_template' => '<div class="title">{{title}}</div><div class="meta"></div><div class="meta"><span class="description">Voicing: </span><span class="value">{{voicing}}</span></div><div class="meta"><span class="description">Type: </span><span class="value">{{type}}</span></div><div class="meta"><span class="description">Contestant Size: </span><span class="value">{{size}}</span></div><div class="meta"><span class="description">Age: </span><span class="value">{{age}}</span></div>',
+				'result_template' => Timber::compile('typeahead-results/contestant.twig'),
 				'multiple' => false,
 				'add_new' => true,
 				'styles' => [
@@ -521,12 +523,12 @@ class Videos extends Child_Theme {
 				'reference_scores' => [
 					'type' => 'html',
 					'label' => ' ',
-					'content' => $this->show_timber_template('reference-scores.twig'),
+					'content' => Timber::compile('reference-scores.twig'),
 				],
 				'contest_scores' => [
 					'type' => 'html',
 					'label' => ' ',
-					'content' => $this->show_timber_template('contest-scores.twig'),
+					'content' => Timber::compile('contest-scores.twig'),
 				],
 			]);
 		}
@@ -583,12 +585,12 @@ class Videos extends Child_Theme {
 					'placeholder' => 'Type video name',
 				],
 				'additional_fields' => [
-					'type' => ['function' => 'static_get_type_display', 'class' => '\\SquareCoda\\Theme\\Contestants'],
-					'voicing' => ['function' => 'static_get_voicing_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
-					'age' => ['function' => 'static_get_age_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
-					'size' => ['function' => 'static_get_size_display', 'class' => '\\SquareCoda\Theme\\Contestants'],
+					'song_title' => ['function' => 'static_get_song_title_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+					'contestant' => ['function' => 'static_get_contestant_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+					'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+					'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
 				],
-				'result_template' => '<div class="title">{{title}}</div>',
+				'result_template' => Timber::compile('typeahead-results/video.twig'),
 				'multiple' => false,
 				'add_new' => false,
 				'styles' => [
@@ -847,6 +849,47 @@ class Videos extends Child_Theme {
 
 		return $options;		
 	}
+
+	static public function static_get_song_title_display($post_id) {
+		return get_post_meta($post_id, 'song_title', true);
+	}
+
+	static public function static_get_contestant_display($post_id) {
+		$contestant = get_post_meta($post_id, 'contestant', true);
+		return get_the_title($contestant);
+	}
+
+	static public function static_get_video_date_display($post_id) {
+		$video_date = get_post_meta($post_id, 'video_date', true);
+		return date('n/j/Y', strtotime($video_date));
+	}
+
+	static public function static_get_district_display($post_id) {
+		$district = get_post_meta($post_id, 'contest_district', true);
+		$district_options = self::get_district_options(true);
+		return !empty($district_options[$district]) ? $district_options[$district] : $district;
+	}
+
+	static public function static_get_type_display($post_id) {
+		$contestant = get_post_meta($post_id, 'contestant', true);
+		return Contestants::{__FUNCTION__}($contestant);
+	}
+
+	static public function static_get_voicing_display($post_id) {
+		$contestant = get_post_meta($post_id, 'contestant', true);
+		return Contestants::{__FUNCTION__}($contestant);
+	}
+
+	static public function static_get_age_display($post_id) {
+		$contestant = get_post_meta($post_id, 'contestant', true);
+		return Contestants::{__FUNCTION__}($contestant);
+	}
+
+	static public function static_get_size_display($post_id) {
+		$contestant = get_post_meta($post_id, 'contestant', true);
+		return Contestants::{__FUNCTION__}($contestant);
+	}
+
 
 }
 

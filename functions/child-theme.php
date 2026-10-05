@@ -125,6 +125,7 @@ class Child_Theme extends Base {
 			'suffix',
 			'nickname',
 			'display_name',
+			'legacy_username',
 		];
 
 		$field_values = [];
@@ -140,7 +141,7 @@ class Child_Theme extends Base {
 		if(!empty($prefix)) $full_name = $prefix . ' ' . $full_name;
 		if(!empty($suffix)) $full_name .= ' ' . $suffix;
 
-		return $full_name;	
+		return !empty(trim($full_name)) ? trim($full_name) : $legacy_username;
 	}
 
 	static public function get_district_options($include_international = false) {
@@ -194,6 +195,18 @@ class Child_Theme extends Base {
 		}
 
 		return $options;
+	}
+
+	public function get_judge_status_options() {
+		return [
+			'active' => 'Active',
+			'inactive' => 'Inactive',
+			'candidate' => 'Candidate',
+			'applicant' => 'Applicant',
+			'not_certified' => 'Not Certified',
+			// 'retired' => 'Retired',
+			// 'emeritus' => 'Emeritus',
+		];
 	}
 
 	public function show_timber_template($template, $values = []) {

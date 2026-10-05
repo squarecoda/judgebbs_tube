@@ -1,0 +1,18 @@
+{% set meta_fields = [
+	{
+		label: 'Contestant',
+		name: 'contestant'
+	},
+	{
+		label: 'Contest Location',
+		name: 'district'
+	},
+	{
+		label: 'Video Date',
+		name: 'video_date'
+	},
+] %}
+
+<div class="title">{{ '{{song_title}}' }}</div>
+
+{% include 'typeahead-results/_meta.twig' %}
