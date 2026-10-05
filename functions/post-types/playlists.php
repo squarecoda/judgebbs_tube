@@ -165,6 +165,13 @@ class Playlists extends Child_Theme {
 			'legacy_divider' => [
 				'type' => 'divider',
 			],
+			'legacy_id' => [
+				'type' => 'number',
+				'label' => 'Legacy ID',
+				'styles' => [
+					'width' => '25%',
+				],
+			],
 			'legacy_video_ids' => [
 				'type' => 'array',
 				'classes' => [
