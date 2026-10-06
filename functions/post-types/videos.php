@@ -851,23 +851,27 @@ class Videos extends Child_Theme {
 	}
 
 	static public function static_get_song_title_display($post_id) {
-		return get_post_meta($post_id, 'song_title', true);
+		$value = get_post_meta($post_id, 'song_title', true);
+		return $value;
 	}
 
 	static public function static_get_contestant_display($post_id) {
 		$contestant = get_post_meta($post_id, 'contestant', true);
-		return get_the_title($contestant);
+		$value = get_the_title($contestant);
+		return $value;
 	}
 
 	static public function static_get_video_date_display($post_id) {
 		$video_date = get_post_meta($post_id, 'video_date', true);
-		return date('n/j/Y', strtotime($video_date));
+		$value = date('n/j/Y', strtotime($video_date));
+		return $value;
 	}
 
 	static public function static_get_district_display($post_id) {
 		$district = get_post_meta($post_id, 'contest_district', true);
 		$district_options = self::get_district_options(true);
-		return !empty($district_options[$district]) ? $district_options[$district] : $district;
+		$value = !empty($district_options[$district]) ? $district_options[$district] : $district;
+		return $value;
 	}
 
 	static public function static_get_type_display($post_id) {

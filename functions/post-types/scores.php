@@ -24,6 +24,10 @@ class Scores extends Child_Theme {
 			// Post Type Edit Pages
 			add_action('edit_form_after_title', [$this, 'custom_edit_form']);
 
+			// Field Formatting
+			add_action('edit_form_after_title', [$this, 'show_name_instead_of_title'], 5);
+			add_action('sc_field_editor/after_process_fields', [$this, 'update_title_when_data_changed']);
+
 			// Custom Fields
 			add_shortcode(sprintf('sc_meta_fields_%s', $this->post_type), [$this, 'custom_fields']);
 		}
@@ -46,6 +50,7 @@ class Scores extends Child_Theme {
 				'plural' => $this->plural,
 				'rewrite' => $this->post_type_slug,
 				'menu_icon' => 'dashicons-yes',
+				'supports' => ['none'],
 				// 'public' => false,
 				// 'publicly_queryable' => false,
 				// 'show_ui' => false,
@@ -64,6 +69,56 @@ class Scores extends Child_Theme {
 
 		if($post->post_type == $this->post_type) {
 			echo do_shortcode('[sc_meta_form back_end="true" post_type="' . $post->post_type . '" post_id="' . $post->ID . '"]');
+		}
+	}
+
+	//======================
+	// Field Formatting
+	//======================
+	public function get_full_name($post_id) {
+		$fields = [
+			'video',
+			'judge',
+			'playlist',
+		];
+
+		foreach($fields as $field) $$field = get_post_meta($post_id, $field, true);
+
+		if(!empty($video) || !empty($judge) || !empty($playlist)) {
+
+			$event_name_parts = [];
+			foreach($fields as $field) {
+				//Updates to fields
+				if(!empty($$field)) {
+					$$field = get_the_title($$field);
+					$event_name_parts[] = $$field;
+				}
+			}
+
+			if(!empty($event_name_parts)) return implode(' | ', $event_name_parts);
+
+			return get_post_meta($post_id, 'legacy_id', true);
+		}
+	}
+
+	public function show_name_instead_of_title($post) {
+		if($post->post_type == $this->post_type) {
+			echo sprintf('<h1>%s</h1>', get_the_title($post->ID));
+			$permalink_pattern = '<div id="edit-slug-box" class="hide-if-no-js" style="padding-left: 0"><strong>Permalink:</strong> <span id="sample-permalink"><a href="%s">%s</a></span></div>';
+			echo sprintf($permalink_pattern, get_the_permalink($post->ID), get_the_permalink($post->ID));
+		}
+	}
+
+	public function update_title_when_data_changed($post_id) {
+		if(get_post_type($post_id) == $this->post_type) {
+			$full_name = trim($this->get_full_name($post_id));
+			if(!empty($full_name) && sanitize_title(get_the_title($post_id)) != sanitize_title($full_name)) {
+				wp_update_post([
+					'ID' => $post_id,
+					'post_title' => $full_name,
+					'post_name' => '',
+				]);
+			}
 		}
 	}
 
@@ -151,12 +206,18 @@ class Scores extends Child_Theme {
 			],
 			'penalty' => [
 				'type' => 'wysiwyg',
+				'classes' => [
+					'even-tabs',
+				],
 				'styles' => [
 					'width' => '40%',
 				],
 			],
 			'comments' => [
 				'type' => 'wysiwyg',
+				'classes' => [
+					'even-tabs',
+				],
 				'styles' => [
 					'width' => '40%',
 				],
@@ -165,6 +226,12 @@ class Scores extends Child_Theme {
 
 			'legacy_divider' => [
 				'type' => 'divider',
+			],
+			'legacy_id' => [
+				'type' => 'number',
+				'styles' => [
+					'width' => '25%',
+				],
 			],
 			'legacy_video_id' => [
 				'type' => 'number',
@@ -179,7 +246,7 @@ class Scores extends Child_Theme {
 				],
 			],
 			'playlist_name' => [
-				'type' => 'number',
+				'type' => 'text',
 				'styles' => [
 					'width' => '25%',
 				],
