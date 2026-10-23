@@ -1,0 +1,7 @@
+{% set current_judge_id = current_judge_id ?: fn('get_current_judge_id') %}
+
+<div class="playlist-video-score {{ fn('get_judge_category', current_judge_id) }}">
+	<div class="playlist-video-score-header">My Score</div>
+
+	<div class="playlist-video-score-value">{{ video.score ?: fn('get_my_score', video.id, current_judge_id) }}</div>
+</div>

@@ -1,15 +1,3 @@
-@mixin category_colors {
-	&.mus {
-		--color: var(--color-mus);
-	}
-	&.per {
-		--color: var(--color-per);
-	}
-	&.sng {
-		--color: var(--color-sng);
-	}
-}
-
 .reference-score-wrapper {
 	--padding: 20px;
 	background: white;

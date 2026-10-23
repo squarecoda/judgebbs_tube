@@ -87,39 +87,6 @@ class Playlists extends Child_Theme {
 		], $attributes));
 
 		$fields = [
-			'videos' => [
-				'type' => 'array',
-				'classes' => [
-					'small',
-					'single',
-					'typeahead-array',
-				],
-				'singular' => 'Video',
-				'array_fields' => [
-					'video' => [
-						'type' => 'typeahead',
-						'search_type' => 'bbs-video', 
-						'search_fields' => [ 
-							'title',
-						],
-						'attributes' => [
-							'placeholder' => 'Type video name',
-						],
-						'additional_fields' => [
-							'song_title' => ['function' => 'static_get_song_title_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-							'contestant' => ['function' => 'static_get_contestant_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-							'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-							'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-						],
-						'result_template' => Timber::compile('typeahead-results/video.twig'),
-						'multiple' => false,
-						'add_new' => false,
-					],
-				],
-				'styles' => [
-					'width' => '50%',
-				],
-			],
 			'judge' => [
 				'type' => 'typeahead',
 				'search_type' => 'bbs-judge', 
@@ -160,7 +127,39 @@ class Playlists extends Child_Theme {
 					'width' => '25%',
 				],
 			],
-
+			'videos' => [
+				'type' => 'array',
+				'classes' => [
+					'small',
+					'single',
+					'typeahead-array',
+				],
+				'singular' => 'Video',
+				'array_fields' => [
+					'video' => [
+						'type' => 'typeahead',
+						'search_type' => 'bbs-video', 
+						'search_fields' => [ 
+							'title',
+						],
+						'attributes' => [
+							'placeholder' => 'Type video name',
+						],
+						'additional_fields' => [
+							'song_title' => ['function' => 'static_get_song_title_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+							'contestant' => ['function' => 'static_get_contestant_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+							'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+							'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+						],
+						'result_template' => Timber::compile('typeahead-results/video.twig'),
+						'multiple' => false,
+						'add_new' => false,
+					],
+				],
+				'styles' => [
+					'width' => '50%',
+				],
+			],
 
 			'legacy_divider' => [
 				'type' => 'divider',

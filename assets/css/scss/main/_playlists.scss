@@ -1,0 +1,64 @@
+.playlist-display {
+	@include flex_single_column(50px);
+	.playlist-videos {
+		@include flex_single_column(15px);
+		.video-post {
+			@include flex_row_centered(15px);
+			.playlist-video-score {
+				--border-width: 3px;
+				--color: var(--sc-text);
+				border: var(--border-width) solid var(--color);
+				border-radius: 12px;
+				overflow: hidden;
+				width: 88px;
+				@include category_colors;
+				flex-shrink: 0;
+				.playlist-video-score-header {
+					font-size: 14px;
+					color: white;
+					background: var(--color);
+					padding: 10px;
+					padding-bottom: var(--border-width);
+					padding-top: 0;
+					text-align: center;
+				}
+				.playlist-video-score-value {
+					padding: 0px;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 20px;
+					height: 36px;
+				}
+				&:has(.playlist-video-score-value:empty) {
+					--color: #889;
+					font-style: italic;
+						background: #dddde2;
+					.playlist-video-score-value {
+					}
+				}
+			}
+			.video-link {
+				@include flex_single_column(4px);
+				.song-title {
+					font-size: 18px;
+					font-weight: 600;
+				}
+				.contestant {
+					font-size: 14px;
+				}
+			}
+		}
+	}
+
+	.total-scores {
+		padding: 15px 0;
+		background: white;
+		font-size: 18px;
+		position: sticky;
+		bottom: 0;
+		border-top: 1px solid rgba(#445, 50%);
+		font-weight: 600;
+		@include flex_row_centered(10px);
+	}
+}

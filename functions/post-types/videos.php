@@ -242,7 +242,7 @@ class Videos extends Child_Theme {
 		return $args;
 	}
 
-	function get_post_array($post_id) {
+	public function get_post_array($post_id) {
 		$contestant_obj = new Contestants(false);
 		$contestant_id = $this->get_field('contestant', $post_id);
 

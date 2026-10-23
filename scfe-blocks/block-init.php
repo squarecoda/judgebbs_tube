@@ -34,3 +34,9 @@ class Video_Detail_Layout extends Tube_Category {
 	public $fields = [];
 }
 new Video_Detail_Layout;
+
+class Playlist_Detail_Layout extends Tube_Category {
+	public $class_name = __CLASS__;
+	public $fields = [];
+}
+new Playlist_Detail_Layout;

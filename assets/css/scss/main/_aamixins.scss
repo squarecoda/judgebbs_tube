@@ -66,3 +66,15 @@
 	align-items: center;
 	justify-content: center;
 }
+
+@mixin category_colors {
+	&.mus {
+		--color: var(--color-mus);
+	}
+	&.per {
+		--color: var(--color-per);
+	}
+	&.sng {
+		--color: var(--color-sng);
+	}
+}

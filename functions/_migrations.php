@@ -138,7 +138,7 @@
 		if(current_user_can('administrator') && !empty($_GET[__FUNCTION__]) && $_GET[__FUNCTION__] == 'true') {
 			$query = new WP_Query([
 				'post_type' => 'bbs-playlist',
-				'posts_per_page' => !empty($_GET['posts_per_page']) ? $_GET['posts_per_page'] : 250,
+				'posts_per_page' => !empty($_GET['posts_per_page']) ? $_GET['posts_per_page'] : 200,
 				'meta_query' => [
 					[
 						'key' => 'legacy_judge_id',
@@ -169,14 +169,13 @@
 			wp_die();
 		}
 	}
-	add_action('admin_init', 'script_update_playlist_typeaheads');
+	// add_action('admin_init', 'script_update_playlist_typeaheads');
 
 	function script_update_score_typeaheads() {
 		if(current_user_can('administrator') && !empty($_GET[__FUNCTION__]) && $_GET[__FUNCTION__] == 'true') {
 			$query = new WP_Query([
 				'post_type' => 'bbs-score',
-				// 'posts_per_page' => 8000,
-				'posts_per_page' => !empty($_GET['posts_per_page']) ? $_GET['posts_per_page'] : 5000,
+				'posts_per_page' => !empty($_GET['posts_per_page']) ? $_GET['posts_per_page'] : 200,
 				'meta_query' => [
 					[
 						'key' => 'legacy_video_id',
@@ -207,4 +206,4 @@
 			wp_die();
 		}
 	}	
-	add_action('admin_init', 'script_update_score_typeaheads');
+	// add_action('admin_init', 'script_update_score_typeaheads');

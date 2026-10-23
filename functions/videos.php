@@ -1,7 +1,41 @@
 <?php
+	function get_video_array($post_id, $judge_id = false) {
+		$videos_obj = new SquareCoda\Theme\Videos(false);
+		$array = $videos_obj->get_post_array($post_id);
+
+		if(!empty($judge_id)) {
+			$array['score'] = get_my_score($post_id, $judge_id);
+		}
+
+		return $array;
+	}
+
 	function get_video_search_results() {
 		$videos_obj = new SquareCoda\Theme\Videos(false);
 		return $videos_obj->get_search_results();
+	}
+
+	function get_my_score($video_id, $judge_id) {
+		$results = get_posts([
+			'post_type' => 'bbs-score',
+			'posts_per_page' => -1,
+			'meta_query' => [
+				[
+					'key' => 'judge',
+					'value' => $judge_id,
+				],
+				[
+					'key' => 'video',
+					'value' => $video_id,
+				],
+			],
+			'fields' => 'ids',
+		]);
+
+		if(empty($results)) return '';
+
+		$score_id = current($results);
+		return get_post_meta($score_id, 'score', true);
 	}
 
 	function clear_empty_params_for_search_pages() {
