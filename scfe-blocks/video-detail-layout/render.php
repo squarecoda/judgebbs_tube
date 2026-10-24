@@ -10,7 +10,7 @@
 		$field_values[$field_name] = get_post_meta($post->ID, $field_name, true);
 	}
 
-	Timber::render(sprintf('%s/display.twig', basename(dirname(__FILE__))), $field_values);
+	Timber::render(sprintf('%s/display.twig', basename(dirname(__FILE__))), array_merge(['get' => !empty($_GET) ? $_GET : []], $field_values));
 
 	// display_result($field_values);
 	// display_result($fields);

@@ -91,3 +91,30 @@
 		}
 	}
 	// add_action('admin_init', 'update_video_hidden_fields');
+
+	function get_playlist_from_slug($slug) {
+		$results = get_posts([
+			'post_type' => 'bbs-playlist',
+			'posts_per_page' => -1,
+			'name' => $slug,
+			'fields' => 'ids',
+		]);
+
+		return !empty($results) ? current($results) : '';
+	}
+
+	function get_video_playlist_pagination($playlist_id, $order) {
+		$videos = get_post_meta($playlist_id, 'videos', true);
+		if(!empty($videos)) $videos = json_decode(base64_decode($videos), true);
+		if(empty($videos)) return [];
+
+		$current_index = $order - 1;
+
+		return [
+			'prev_page' => $current_index - 1 >= 0 ? $videos[$current_index - 1]['video'] : '',
+			'prev_order' => $current_index - 1 >= 0 ? $order - 1 : '',
+			'next_page' => $current_index + 1 < count($videos) ? $videos[$current_index + 1]['video'] : '',
+			'next_order' => $current_index + 1 < count($videos) ? $order + 1 : '',
+			'total_videos' => count($videos),
+		];
+	}

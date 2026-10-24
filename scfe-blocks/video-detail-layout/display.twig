@@ -1,7 +1,11 @@
+{% if get.playlist and get.order %}
+	{% set playlist_id = fn('get_playlist_from_slug', get.playlist) %}
+{% endif %}
+	
 <div class="video-display">
 
 	{% if video_url %}
-	<div class="video full">
+	<div class="video large">
 		{{ video_url ? fn('do_shortcode', '[sc_video_embed link="' ~ video_url ~ '"]') }}
 	</div>
 	{% endif %}
@@ -13,5 +17,11 @@
 	<div class="scores large">
 		{% include 'reference-scores.twig' %}
 	</div>
+
+	{% if playlist_id %}
+	<div class="sticky-footer full">
+		{% include 'video-playlist-pagination.twig' %}
+	</div>
+	{% endif %}
 
 </div>

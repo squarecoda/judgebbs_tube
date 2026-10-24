@@ -1,0 +1,36 @@
+{% set pagination = fn('get_video_playlist_pagination', playlist_id, get.order) %}
+
+{% if pagination.prev_page or pagination.next_page %}
+<div class="pagination">
+
+	<div class="pagination-buttons">
+		{% if pagination.prev_page and pagination.prev_order %}
+		<a class="pagination-button prev" href="{{ fn('get_the_permalink', pagination.prev_page) }}?playlist={{ get.playlist }}&order={{ pagination.prev_order }}">
+			<span class="fas fa-chevron-left"></span>
+		</a>
+		{% else %}
+		<a class="pagination-button prev disabled">
+			<span class="fas fa-chevron-left"></span>
+		</a>
+		{% endif %}
+
+		{% if pagination.next_page and pagination.next_order %}
+		<a class="pagination-button prev" href="{{ fn('get_the_permalink', pagination.next_page) }}?playlist={{ get.playlist }}&order={{ pagination.next_order }}">
+			<span class="fas fa-chevron-right"></span>
+		</a>
+		{% else %}
+		<a class="pagination-button prev disabled">
+			<span class="fas fa-chevron-right"></span>
+		</a>
+		{% endif %}
+
+	</div>
+
+	{% if pagination.total_videos %}
+	<div class="results-amount">Video {{ get.order }} of {{ pagination.total_videos }}</div>
+	{% endif %}
+
+	<a class="video-playlist-link" href="{{ fn('get_the_permalink', playlist_id) }}"><span class="fas fa-chevron-left"></span> {{ fn('get_the_title', playlist_id) }}</a>
+
+</div>
+{% endif %}
