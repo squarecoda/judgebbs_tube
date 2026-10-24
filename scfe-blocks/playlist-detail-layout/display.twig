@@ -1,14 +1,14 @@
 {% set current_judge_id = current_judge_id ?: fn('get_current_judge_id') %}
 {% set videos = fn('json_decode', fn('base64_decode', videos)) %}
 
-{% set score_number = 0 %}
-{% set video_number = 0 %}
+{% set playlist_details = fn('get_playlist_details', post_id, current_judge_id) %}
 
 <div class="playlist-display">
 
 	<div class="playlist-videos">
 		{% for video in videos %}
 			{% set video = fn('get_video_array', video.video, current_judge_id) %}
+
 			<a class="video-post" href="{{ video.url }}?playlist={{ post_slug }}&order={{ loop.index }}">
 				{% include 'playlist-video-score.twig' %}
 				<div class="video-link">
@@ -16,18 +16,10 @@
 					<div class="contestant">{{ video.contestant.title }}</div>
 				</div>
 			</a>
-
-			{% set video_number = video_number + 1 %}
-			{% if video.score %}
-				{% set score_number = score_number + 1 %}
-			{% endif %}
 		{% endfor %}
 	</div>
 
 	<div class="sticky-footer">
-		<div class="total-scores">
-			<div class="circle-progress {{ fn('get_judge_category', current_judge_id) }}" amount="{{ score_number }}" total="{{ video_number }}"></div>
-			<div class="score-text">{{ score_number }}/{{ video_number }} scores recorded</div>
-		</div>
+		{{ include('playlist-percentage.twig') }}
 	</div>
 </div>

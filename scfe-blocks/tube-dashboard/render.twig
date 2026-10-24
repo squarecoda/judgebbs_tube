@@ -1,34 +1,18 @@
 {% set widgets = [
 	{
 		heading: 'Profile',
-		body: '[Profile Widget Body]',
+		body: include('widgets/profile.twig'),
 		cta: {
 			text: 'View Profile',
 			url: '#profile',
 		},
 	},
 	{
-		heading: 'Quick Search',
-		body: '[Search Widget Body]',
-		cta: {
-			text: 'Full Search',
-			url: '#search',
-		},
-	},
-	{
-		heading: 'Saved Videos',
-		body: '[Saved Videos Widget Body]',
+		heading: 'Assigned Playlists',
+		body: include('widgets/assigned-playlists.twig'),
 		cta: {
 			text: 'See All',
 			url: '#saved-videos',
-		},
-	},
-	{
-		heading: 'Saved Playlists',
-		body: '[Saved Playlists Widget Body]',
-		cta: {
-			text: 'See All',
-			url: '#saved-playlists',
 		},
 	},
 ] %}

@@ -1,6 +1,8 @@
 <?php
 	function get_video_array($post_id, $judge_id = false) {
 		$videos_obj = new SquareCoda\Theme\Videos(false);
+
+		$post_id = $videos_obj->get_int_from_typeahead_field($post_id);
 		$array = $videos_obj->get_post_array($post_id);
 
 		if(!empty($judge_id)) {

@@ -89,6 +89,7 @@ class Playlists extends Child_Theme {
 		$fields = [
 			'judge' => [
 				'type' => 'typeahead',
+				'label' => 'Creator',
 				'search_type' => 'bbs-judge', 
 				'search_fields' => [ 
 					'title',
@@ -103,19 +104,12 @@ class Playlists extends Child_Theme {
 				'multiple' => false,
 				'add_new' => false,
 				'styles' => [
-					'width' => '25%',
+					'width' => '50%',
 				],
 			],
 			'public' => [
 				'type' => 'true-false',
 				'label' => 'Public playlist?',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'scoring' => [
-				'type' => 'true-false',
-				'label' => 'Scoring playlist?',
 				'styles' => [
 					'width' => '25%',
 				],
@@ -126,6 +120,53 @@ class Playlists extends Child_Theme {
 				'styles' => [
 					'width' => '25%',
 				],
+			],
+			'scoring' => [
+				'type' => 'true-false',
+				'label' => 'Assigned playlist?',
+				'styles' => [
+					'width' => '25%',
+				],
+			],
+			'assigned_categories' => [
+				'type' => 'checkbox-list',
+				'checkbox_options' => [
+					'mus' => 'MUS',
+					'per' => 'PER',
+					'sng' => 'SNG',
+				],
+				'save_as_json' => true,		
+				'styles' => [
+					'width' => '25%',
+				],				
+			],
+			'assigned_statuses' => [
+				'type' => 'checkbox-list',
+				'checkbox_options' => $this->get_judge_status_options(false),
+				'save_as_json' => true,		
+				'styles' => [
+					'width' => '25%',
+				],				
+			],
+			'assigned_judges' => [
+				'type' => 'typeahead',
+				'label' => 'Assigned Judge(s)',
+				'search_type' => 'bbs-judge', 
+				'search_fields' => [ 
+					'title',
+				],
+				'attributes' => [
+					'placeholder' => 'Type judge name',
+				],
+				'additional_fields' => [
+					'judge_category' => ['function' => 'static_get_category_display', 'class' => '\\SquareCoda\\Theme\\Judges'],
+				],
+				'result_template' => Timber::compile('typeahead-results/judge.twig'),
+				'multiple' => true,
+				'add_new' => false,
+				'styles' => [
+					'width' => '25%',
+				],				
 			],
 			'videos' => [
 				'type' => 'array',
@@ -161,8 +202,9 @@ class Playlists extends Child_Theme {
 				],
 			],
 
-			'legacy_divider' => [
-				'type' => 'divider',
+			'legacy_tab' => [
+				'type' => 'tab',
+				'label' => 'Legacy Fields',
 			],
 			'legacy_id' => [
 				'type' => 'number',

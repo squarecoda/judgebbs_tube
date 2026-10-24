@@ -314,6 +314,7 @@ body.wp-admin .reference-score-wrapper {
 	padding-right: 12px;
 	border-radius: 40px;
 	@include flex_row_centered(6px);
+	display: inline-flex;
 	.fas {
 		background: rgba(white, .3);
 		--size: 28px;

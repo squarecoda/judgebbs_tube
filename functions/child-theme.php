@@ -41,6 +41,15 @@ class Child_Theme extends Base {
 	//====================
 	// Helpers
 	//====================	
+	public function get_int_from_typeahead_field($value) {
+		if(!empty(intval($value))) return intval($value);
+
+		if(empty($value)) return '';
+		$value = json_decode(stripslashes($value));
+		if(empty($value)) return '';
+		return current($value);
+	}
+
 	public function get_judge_from_user($user_id = null) {
 		if(empty($user_id)) $user_id = get_current_user_id();
 
@@ -197,16 +206,23 @@ class Child_Theme extends Base {
 		return $options;
 	}
 
-	public function get_judge_status_options() {
-		return [
-			'active' => 'Active',
-			'inactive' => 'Inactive',
+	public function get_judge_status_options($include_inactive = true) {
+		$statuses = [
+			'active' => 'Certified',
 			'candidate' => 'Candidate',
 			'applicant' => 'Applicant',
+			'inactive' => 'Inactive',
 			'not_certified' => 'Not Certified',
 			// 'retired' => 'Retired',
 			// 'emeritus' => 'Emeritus',
 		];
+
+		if(!$include_inactive) {
+			unset($statuses['inactive']);
+			unset($statuses['not_certified']);
+		}
+
+		return $statuses;
 	}
 
 	public function show_timber_template($template, $values = []) {

@@ -1,0 +1,11 @@
+{% set current_judge_id = current_judge_id ?: fn('get_current_judge_id') %}
+
+{% set assigned_playlists = fn('get_assigned_playlists', current_judge_id) %}
+
+<div class="assigned-playlists">
+{% for playlist in assigned_playlists %}
+	<a href="{{ fn('get_the_permalink', playlist.id) }}{{ get.judge_id ? '?judge_id=' ~ get.judge_id }}">
+		{{ include('playlist-percentage.twig', { playlist_details: playlist, show_title: true }) }}
+	</a>
+{% endfor %}
+</div>

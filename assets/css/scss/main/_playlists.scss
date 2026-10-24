@@ -50,9 +50,22 @@
 		}
 	}
 
-	.total-scores {
-		font-size: 18px;
-		font-weight: 600;
-		@include flex_row_centered(10px);
+}
+
+.total-scores {
+	font-size: 18px;
+	font-weight: 600;
+	@include flex_row_centered(10px);
+	.score-text {
+		@include flex_single_column(6px);
+		&:has(.playlist-title) {
+			.playlist-title {
+				font-size: 20px;
+			}
+			.score-total {
+				font-size: 16px;
+				font-weight: 500;
+			}
+		}
 	}
 }

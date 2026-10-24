@@ -1,0 +1,11 @@
+{% set show_title = show_title|default(false) %}
+
+<div class="total-scores">
+	<div class="circle-progress {{ fn('get_judge_category', current_judge_id) }}" amount="{{ playlist_details.score_number }}" total="{{ playlist_details.video_number }}"></div>
+	<div class="score-text">
+		{% if show_title %}
+		<div class="playlist-title">{{ fn('get_the_title', playlist_details.id) }}</div>
+		{% endif %}
+		<div class="score-total">{{ playlist_details.score_number }}/{{ playlist_details.video_number }} scores recorded</div>
+	</div>
+</div>

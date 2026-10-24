@@ -3,18 +3,64 @@ html body.wp-admin .wp-block-post-content {
 	font-weight: 500;
 }
 
+.sticky-header,
 .sticky-footer {
+	--outer-margin: 15px;
+	--border-style: 1px solid;
 	padding: 30px 0;
 	background: white;
 	position: sticky;
+	display: flex;
+	border-color: rgba(#445, 50%) !important;
+	@include flex_single_column(15px);
+	align-items: flex-start;
+	z-index: 500;
+
+	@media (max-width: 600px) {
+		padding: 15px 0;
+	}
+
+	&:before,
+	&:after {
+		content: '';
+		height: calc(100% + 1px);
+		position: absolute;
+		width: var(--outer-margin);
+		background: white;
+	}
+	&:before {
+		right: 100%;
+	}
+	&:after {
+		left: 100%;
+	}
+}
+
+.sticky-header {
+	top: var(--wp-admin--admin-bar--height, 0);
+	border-bottom: var(--border-style);
+
+	&:before,
+	&:after {
+		bottom: -1px;
+	}
+}
+
+.sticky-footer {
 	bottom: 0;
-	border-top: 1px solid rgba(#445, 50%);
+	border-top: var(--border-style);
+
+	&:before,
+	&:after {
+		top: -1px;
+	}
 }
 
 .pagination {
 	@include flex_row_centered(15px);
+	justify-content: center;
 	.pagination-buttons {
-		@include flex_row_centered(2px);
+		@include flex_row_centered(10px);
 		.pagination-button {
 			--size: 40px;
 			background: #445;
