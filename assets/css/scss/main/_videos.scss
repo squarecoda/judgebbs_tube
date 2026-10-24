@@ -150,6 +150,13 @@
 	}
 }
 
+.scfe-block-wrapper.video-detail-layout {
+	padding-top: 0;
+}
+
+body:has(.scfe-block-wrapper.video-detail-layout) {
+	--sc-header-border-bottom-width: 5px;
+}
 
 body.wp-admin .reference-score-wrapper {
 	box-shadow: none;
