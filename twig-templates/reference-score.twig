@@ -5,8 +5,8 @@
 	{% set update = update_history|first %}
 	{% set score = update.score %}
 {% endif %}
-<div class="reference-score-display {{ category }}" score="{{ score }}">
-	<div class="reference-score-display-heading">
+<div class="score-display {{ category }}" score="{{ score }}" post_id="{{ id }}">
+	<div class="score-display-heading">
 		<div class="category-name">{{ category|upper }}</div>
 		{% if is_admin %}
 		<div class="history scfe-modal-trigger" category="{{ category }}" update_history="{{ fn('base64_encode', fn('json_encode', update_history)) }}" class="" target="#{{ modal_id }}">
@@ -24,7 +24,7 @@
 
 		{% endif %}
 	</div>
-	<div class="reference-score-display-body">
+	<div class="score-display-body">
 		<div class="score-view">{{ score }}</div>
 		<div class="score-edit" category="{{ category }}">
 			<input class="score-value" type="number" step=".1" min="0" max="100" category="{{ category }}">
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	{% if is_admin %}
-	<div class="reference-score-display-footer">
+	<div class="score-display-footer">
 		<div class="edit-score-button" category="{{ category }}">
 			<span class="fas fa-edit"></span> Edit
 		</div>

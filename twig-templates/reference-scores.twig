@@ -5,30 +5,31 @@
 
 {% set reference_scores = fn('get_reference_scores', id) %}
 
-<div class="reference-score-wrapper" post_id="{{ id }}">
+<div class="reference-score-wrapper">
 
 	<div class="reference-score-wrapper-heading">Reference Scores</div>
 
 	<div class="reference-score-display-wrapper">
 
 		{# Overall Score #}
-		<div class="reference-score-display overall" title="Automatically calculated">
-			<div class="reference-score-display-heading">Overall</div>
-			<div class="reference-score-display-body">
+		<div class="score-display overall" title="Automatically calculated" post_id="{{ id }}">
+			<div class="score-display-heading">Overall</div>
+			<div class="score-display-body">
 				<div class="score-view">
 					<span class="fas fa-cog fa-spin"></span>
 				</div>
 			</div>
 			{% if is_admin %}
-			<div class="reference-score-display-footer">
+			<div class="score-display-footer">
 				Auto-calculated
 			</div>
 			{% endif %}
 		</div>
 
-	{% for category, update_history in reference_scores %}
-		{% include 'reference-score.twig' %}
-	{% endfor %}
+		{% for category, update_history in reference_scores %}
+			{{ include('reference-score.twig') }}
+		{% endfor %}
+
 	</div>
 
 </div>

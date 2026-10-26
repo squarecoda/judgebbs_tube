@@ -6,27 +6,29 @@
 
 	{% if playlist_id %}
 	<div class="sticky-header full">
-		<a class="video-playlist-link" href="{{ fn('get_the_permalink', playlist_id) }}"><span class="fas fa-chevron-left"></span> {{ fn('get_the_title', playlist_id) }}</a>
+		{{ include('video-detail/playlist-header.twig') }}
 	</div>
 	{% endif %}
 
-	{% if video_url %}
 	<div class="video large">
-		{{ video_url ? fn('do_shortcode', '[sc_video_embed link="' ~ video_url ~ '"]') }}
+		{{ include('video-detail/video.twig') }}
 	</div>
-	{% endif %}
+
+	<div class="my-score-wrapper">
+		{{ include('video-detail/my-score.twig') }}
+	</div>
 
 	<div class="data">
-		{{ fn('get_the_title') }}
+		{{ include('video-detail/data.twig') }}
 	</div>
 
 	<div class="scores large">
-		{% include 'reference-scores.twig' %}
+		{{ include('reference-scores.twig') }}
 	</div>
 
 	{% if playlist_id %}
 	<div class="sticky-footer full">
-		{% include 'video-playlist-pagination.twig' %}
+		{{ include('video-playlist-pagination.twig') }}
 	</div>
 	{% endif %}
 

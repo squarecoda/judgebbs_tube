@@ -1,0 +1,46 @@
+{% set current_judge_id = current_judge_id ?: fn('get_current_judge_id') %}
+{% set id = fn('get_the_id') %}
+
+{% set category = fn('get_judge_category', current_judge_id) %}
+
+<div class="score-display {{ category }} {{ score ?: 'editing' }}" score="{{ score }}">
+	<div class="score-display-heading">
+		<div class="category-name">My Score</div>
+
+		{#
+		<div class="history scfe-modal-trigger" category="{{ category }}" update_history="{{ fn('base64_encode', fn('json_encode', update_history)) }}" class="" target="#{{ modal_id }}">
+			<span class="fas fa-clock-rotate-left"></span>
+		</div>
+
+		{% set modal_header %}
+		<div class="score-modal-heading {{ category }}">
+			<div class="score-modal-title">{{ category|upper }} Reference Score History</div>
+			<div class="score-modal-subtitle">{{ fn('get_the_title', id) }}</div>
+		</div>
+		{% endset %}
+
+		{% include 'scfe-modal.twig' %}
+		#}
+
+	</div>
+	<div class="score-display-body">
+		<div class="score-view">{{ score }}</div>
+		<div class="score-edit" judge_id="{{ current_judge_id }}" song_id="{{ id }}">
+			<input class="score-value" type="number" step="1" min="0" max="100" placeholder="Score">
+			<textarea class="score-comments" rows="4" placeholder="Comments"></textarea>
+			<div class="show-score-penalty"><span class="fas fa-plus"></span> <span class="show-penalty-text">Penalty</span></div>
+			<textarea class="score-penalty" rows="4" placeholder="Penalty"></textarea>
+			<div class="submit-score-edit {{ category }}">
+				Submit Score <span class="fas fa-arrow-up-from-bracket"></span>
+			</div>
+		</div>
+	</div>
+	<div class="score-display-footer">
+		<div class="edit-score-button" category="{{ category }}">
+			<span class="fas fa-edit"></span> Update Score
+		</div>
+		<div class="cancel-edit-score">
+			<span class="fas fa-times"></span> Cancel
+		</div>
+	</div>
+</div>

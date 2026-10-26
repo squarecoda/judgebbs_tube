@@ -132,3 +132,13 @@
 
 		return readable_score_history($history, $post_id, $category);
 	}
+
+	function bbs_submit_score() {
+
+		$postfields = $_POST;
+		echo json_encode(compact('postfields'));
+		exit;
+	}
+	$ajax_action = 'bbs_submit_score';
+	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);
+	add_action(sprintf('wp_ajax_nopriv_%s', $ajax_action), $ajax_action);

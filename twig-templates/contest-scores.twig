@@ -5,16 +5,16 @@
 
 {% set contest_scores = fn('get_contest_scores', id) %}
 
-<div class="reference-score-wrapper contest-scores" post_id="{{ id }}">
+<div class="reference-score-wrapper contest-scores">
 
 	<div class="reference-score-wrapper-heading">Contest Scores <div class="heading-subtitle">Only visible to admins</div></div>
 
 	<div class="reference-score-display-wrapper">
 
 		{# Overall Score #}
-		<div class="reference-score-display overall" title="Automatically calculated">
-			<div class="reference-score-display-heading">Overall</div>
-			<div class="reference-score-display-body">
+		<div class="score-display overall" title="Automatically calculated">
+			<div class="score-display-heading">Overall</div>
+			<div class="score-display-body">
 				<div class="score-view">
 					<span class="fas fa-cog fa-spin"></span>
 				</div>

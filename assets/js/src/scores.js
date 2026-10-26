@@ -1,48 +1,90 @@
 jQuery(document).ready(function($){
-	if($('.reference-score-wrapper').length) {
+	if($('.reference-score-wrapper').length || $('.my-score-wrapper').length) {
 		updateOverallScore();
 
-		$('.reference-score-display .edit-score-button').on('click', function(){
-			const parentDiv = $(this).closest('.reference-score-display');
+		$('.score-display .edit-score-button').on('click', function(){
+			const parentDiv = $(this).closest('.score-display');
 
 			parentDiv.addClass('editing');
 		});	
-		$('.reference-score-display .cancel-edit-score').on('click', function(){
-			const parentDiv = $(this).closest('.reference-score-display');
+		$('.score-display .cancel-edit-score').on('click', function(){
+			const parentDiv = $(this).closest('.score-display');
 
 			parentDiv.removeClass('editing');
 		});	
 
-		$('.reference-score-display .score-edit .submit-score-edit').on('click', function(){
+		$('.my-score-wrapper .score-display .score-edit .submit-score-edit').on('click', function(e){
+			e.preventDefault();
+
+			const parentDiv = $(this).closest('.score-edit');
+
+			const songId = parentDiv.attr('song_id');
+			const judgeId = parentDiv.attr('judge_id');
+
+			const score = parentDiv.find('input.score-value').val();
+			const comments = parentDiv.find('textarea.score-comments').val();
+			const penalty = parentDiv.hasClass('showing-penalty') ? parentDiv.find('textarea.score-penalty').val() : '';
+
+			if(!score || score < 0 || score > 100) {
+				if(!score) {
+					window.alert('Score is required to submit');
+				} else if(!score || score < 0 || score > 100) {
+					window.alert('Score must be between 0 and 100');
+				}
+				return;
+			}
+
+			const data = {
+				action: 'bbs_submit_score',
+				song_id: songId,
+				judge_id: judgeId,
+				score: score,
+				comments: comments,
+				penalty: penalty,
+			};
+			console.log(data);
+
+			$.post('/wp-admin/admin-ajax.php', data, function(response){
+				console.log(response);
+				const responseJson = JSON.parse(response);
+				console.log(responseJson);
+			});
+		});	
+
+		$('.my-score-wrapper .show-score-penalty').on('click', function(e){
+			$(this).closest('.score-edit').toggleClass('showing-penalty');
+		});	
+
+		$('.reference-score-wrapper .score-display .score-edit .submit-score-edit').on('click', function(){
 			updateReferenceScore($(this).closest('.score-edit'));
 		});	
 
-		$('.reference-score-display .score-edit .score-value').on('keydown', function(e){
+		$('.reference-score-wrapper .score-display .score-edit .score-value').on('keydown', function(e){
 			if(e.originalEvent.key == 'Enter') {
 				e.preventDefault();
 				updateReferenceScore($(this).closest('.score-edit'));
 			}
 		});	
 
-		$('.reference-score-wrapper.contest-scores .reference-score-display .score-edit .score-value').on('keydown', function(e){
+		$('.reference-score-wrapper.contest-scores .score-display .score-edit .score-value').on('keydown', function(e){
 			if(e.originalEvent.key == 'Enter') {
 				e.preventDefault();
 			}
 
 			const el = $(this);
 			setTimeout(function(){
-				el.closest('.reference-score-display').attr('score', el.val());
+				el.closest('.score-display').attr('score', el.val());
 				updateOverallScore();
 			}, 500);
 		});	
 
 		function updateReferenceScore(el) {
-			const parentDiv = el.closest('.reference-score-display');
+			const parentDiv = el.closest('.score-display');
 
 			const category = el.attr('category');
 			const input = el.find('input[category="' + category + '"]');
 			const value = input.val();
-			const postId = el.closest('.reference-score-wrapper').attr('post_id');
+			const postId = parentDiv.attr('post_id');
 
 			console.log(value);
 
@@ -69,7 +111,7 @@ jQuery(document).ready(function($){
 					parentDiv.find('.history.scfe-modal-trigger').attr('update_history', btoa(JSON.stringify(responseJson.score_history)));
 					parentDiv.find('.score-view').html(responseJson.score);
 
-					parentDiv.closest('.reference-score-wrapper').find('.reference-score-display.overall .score-view').html('<span class="fas fa-cog fa-spin"></span>');
+					parentDiv.closest('.reference-score-wrapper').find('.score-display.overall .score-view').html('<span class="fas fa-cog fa-spin"></span>');
 					setTimeout(function(){
 						updateOverallScore();
 					}, 300);
@@ -79,7 +121,7 @@ jQuery(document).ready(function($){
 			}
 		}
 
-		$('.reference-score-display .history.scfe-modal-trigger').on('click', function(){
+		$('.score-display .history.scfe-modal-trigger').on('click', function(){
 			const target = $(this).attr('target');
 			const category = $(this).attr('category');
 
@@ -113,7 +155,7 @@ jQuery(document).ready(function($){
 				let totalScore = 0;
 				let hasAllScores = true;
 
-				const scoreDisplays = $(this).find('.reference-score-display[score]');
+				const scoreDisplays = $(this).find('.score-display[score]');
 
 				scoreDisplays.each(function(){
 					const score = $(this).attr('score');
@@ -130,7 +172,7 @@ jQuery(document).ready(function($){
 					avgScore = Math.round(totalScore * 10 / scoreDisplays.length) / 10;
 				}
 
-				wrapperDiv.find('.reference-score-display.overall .score-view').html(avgScore);
+				wrapperDiv.find('.score-display.overall .score-view').html(avgScore);
 			});
 		}
 	}
