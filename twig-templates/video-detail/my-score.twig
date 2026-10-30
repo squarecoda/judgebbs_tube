@@ -3,6 +3,8 @@
 
 {% set category = fn('get_judge_category', current_judge_id) %}
 
+{% set score = fn('get_my_score', id, current_judge_id) %}
+
 <div class="score-display {{ category }} {{ score ?: 'editing' }}" score="{{ score }}">
 	<div class="score-display-heading">
 		<div class="category-name">My Score</div>
@@ -25,8 +27,8 @@
 	</div>
 	<div class="score-display-body">
 		<div class="score-view">{{ score }}</div>
-		<div class="score-edit" judge_id="{{ current_judge_id }}" song_id="{{ id }}">
-			<input class="score-value" type="number" step="1" min="0" max="100" placeholder="Score">
+		<div class="score-edit" judge_id="{{ current_judge_id }}" judge_category="{{ category }}" song_id="{{ id }}" playlist_id="{{ playlist_id }}">
+			<input class="score-value" type="number" step="1" min="0" max="100" placeholder="Score*">
 			<textarea class="score-comments" rows="4" placeholder="Comments"></textarea>
 			<div class="show-score-penalty"><span class="fas fa-plus"></span> <span class="show-penalty-text">Penalty</span></div>
 			<textarea class="score-penalty" rows="4" placeholder="Penalty"></textarea>

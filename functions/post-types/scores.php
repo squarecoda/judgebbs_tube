@@ -192,19 +192,24 @@ class Scores extends Child_Theme {
 					'width' => '25%',
 				],
 			],
-			'score' => [
-				'type' => 'number',
+			'judge_category' => [
+				'type' => 'select',
+				'select_options' => [
+					'mus' => 'Musicality',
+					'per' => 'Performance',
+					'sng' => 'Singing',
+				],
 				'styles' => [
 					'width' => '25%',
 				],
 			],
-			'judge_category' => [
-				'type' => 'text',
+			'score' => [
+				'type' => 'number',
 				'styles' => [
 					'width' => '20%',
 				],
 			],
-			'penalty' => [
+			'comments' => [
 				'type' => 'wysiwyg',
 				'classes' => [
 					'even-tabs',
@@ -213,7 +218,7 @@ class Scores extends Child_Theme {
 					'width' => '40%',
 				],
 			],
-			'comments' => [
+			'penalty' => [
 				'type' => 'wysiwyg',
 				'classes' => [
 					'even-tabs',

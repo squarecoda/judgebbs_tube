@@ -1,4 +1,4 @@
-.scfe-block-wrapper.video-detail-layout {
+.scfe-block-wrapper.video-detail-layout:has(.sticky-header) {
 	padding-top: 0;
 }
 

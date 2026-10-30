@@ -134,9 +134,33 @@
 	}
 
 	function bbs_submit_score() {
+		$scores_obj = new SquareCoda\Theme\Scores(false);
+
+		extract($_POST);
+
+		//Create Score record
+		$score_id = wp_insert_post([
+			'post_type' => $scores_obj->post_type,
+			'post_status' => 'publish',
+			'meta_input' => [
+				'score' => $score,
+				'comments' => $comments,
+				'penalty' => $penalty,
+				'video' => $song_id,
+				'judge' => $judge_id,
+				'playlist' => $playlist_id,
+				'judge_category' => $judge_category,
+			],
+		]);				
+
+		//Update title
+		wp_update_post([
+			'ID' => $score_id,
+			'post_title' => $scores_obj->get_full_name($score_id),
+		]);
 
 		$postfields = $_POST;
-		echo json_encode(compact('postfields'));
+		echo json_encode(compact('postfields', 'score_id', 'score'));
 		exit;
 	}
 	$ajax_action = 'bbs_submit_score';

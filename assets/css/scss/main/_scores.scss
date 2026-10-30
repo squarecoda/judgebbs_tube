@@ -93,7 +93,7 @@ body.wp-admin .reference-score-wrapper {
 				display: none;
 			}
 			.score-edit {
-				display: flex;
+				display: flex !important;
 			}
 		}
 		.edit-score-button {
@@ -119,6 +119,7 @@ body.wp-admin .reference-score-wrapper {
 			.score-edit {
 				padding: 0;
 				@include flex_single_column(var(--inner-padding));
+				display: none;
 				.show-score-penalty {
 					font-size: 16px;
 					align-self: flex-start;
