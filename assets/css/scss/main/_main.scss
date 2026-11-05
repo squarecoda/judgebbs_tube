@@ -74,3 +74,29 @@ html body.wp-admin .wp-block-post-content {
 		}
 	}
 }
+
+body header.site-header .header-wrapper>.container>.header-logo-tagline .container .header-title a {
+	@include flex_row_centered(15px);
+	img {
+		--image-size: 90px;
+		max-height: var(--image-size);
+		max-width: var(--image-size);
+		margin: 0;
+	}
+	.header-text {
+		font-size: 24px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+		@media (max-width: 600px) {
+			white-space: normal;
+			text-align: left;
+		}
+	}
+}
+
+html body.sc-theme-frontend div.entry-title {
+	--sc-spacing: 15px;
+	h1 {
+		font-size: 36px;
+	}
+}

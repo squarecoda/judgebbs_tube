@@ -100,6 +100,7 @@ class Playlists extends Child_Theme {
 				'additional_fields' => [
 					'judge_category' => ['function' => 'static_get_category_display', 'class' => '\\SquareCoda\\Theme\\Judges'],
 				],
+				'not_dismissible' => true,
 				'result_template' => Timber::compile('typeahead-results/judge.twig'),
 				'multiple' => false,
 				'add_new' => false,
@@ -192,6 +193,7 @@ class Playlists extends Child_Theme {
 							'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
 							'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
 						],
+						'not_dismissible' => true,
 						'result_template' => Timber::compile('typeahead-results/video.twig'),
 						'multiple' => false,
 						'add_new' => false,

@@ -468,6 +468,7 @@ class Videos extends Child_Theme {
 			'use_custom_size' => [
 				'type' => 'true-false',
 				'label' => 'Custom Contestant Size?',
+				'instructions' => 'Use if contestant size is different from contestant record',
 				'styles' => [
 					'width' => '25%'
 				],
@@ -475,6 +476,7 @@ class Videos extends Child_Theme {
 			'use_custom_age' => [
 				'type' => 'true-false',
 				'label' => 'Custom Contestant Age?',
+				'instructions' => 'Use if contestant age is different from contestant record',
 				'styles' => [
 					'width' => '25%'
 				],
@@ -515,24 +517,6 @@ class Videos extends Child_Theme {
 			],
 		];
 
-		if(current_user_can('administrator')) {
-			$fields = array_merge($fields, [
-				'scores_divider' => [
-					'type' => 'divider',
-				],
-				'reference_scores' => [
-					'type' => 'html',
-					'label' => ' ',
-					'content' => Timber::compile('reference-scores.twig'),
-				],
-				'contest_scores' => [
-					'type' => 'html',
-					'label' => ' ',
-					'content' => Timber::compile('contest-scores.twig'),
-				],
-			]);
-		}
-
 		$fields = array_merge($fields, [
 			'contest_divider' => [
 				'type' => 'divider',
@@ -571,76 +555,97 @@ class Videos extends Child_Theme {
 			],
 		]);
 
-		$fields = array_merge($fields, [
-			'misc_divider' => [
-				'type' => 'divider',
-			],
-			'contest_set_pairing' => [
-				'type' => 'typeahead',
-				'search_type' => 'bbs-video', 
-				'search_fields' => [ 
-					'title',
+		if(current_user_can('administrator')) {
+			$fields = array_merge($fields, [
+				'scores_divider' => [
+					'type' => 'divider',
 				],
-				'attributes' => [
-					'placeholder' => 'Type video name',
+				'reference_scores' => [
+					'type' => 'html',
+					'label' => ' ',
+					'content' => Timber::compile('reference-scores.twig'),
 				],
-				'additional_fields' => [
-					'song_title' => ['function' => 'static_get_song_title_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-					'contestant' => ['function' => 'static_get_contestant_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-					'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
-					'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+				'contest_scores' => [
+					'type' => 'html',
+					'label' => ' ',
+					'content' => Timber::compile('contest-scores.twig'),
 				],
-				'result_template' => Timber::compile('typeahead-results/video.twig'),
-				'multiple' => false,
-				'add_new' => false,
-				'styles' => [
-					'width' => '25%'
-				],
-			],
-			'contest_set_order' => [
-				'type' => 'number',
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'media_quality' => [
-				'type' => 'select',
-				'select_options' => $this->get_media_quality_options(),
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-			'comments' => [
-				'type' => 'textarea',
-				'attributes' => [
-					'rows' => 4,
-				],
-				'styles' => [
-					'width' => '25%',
-				],
-			],
-		]);
+			]);
+		}
 
-		$fields = array_merge($fields, [
-			'legacy_divider' => [
-				'type' => 'divider',
-			],
-			'legacy_id' => [
-				'type' => 'text',
-				'label' => 'Legacy ID',
-				'instructions' => 'ID for video from previous website',
-				'styles' => [
-					'width' => '25%',
+		if(current_user_can('administrator')) {
+			$fields = array_merge($fields, [
+				'legacy_tab' => [
+					'type' => 'tab',
+					'label' => 'Legacy Fields',
 				],
-			],
-			'legacy_contest_set_pairing' => [
-				'type' => 'number',
-				'instructions' => 'ID for video from previous website',
-				'styles' => [
-					'width' => '25%',
+				'legacy_id' => [
+					'type' => 'text',
+					'label' => 'Legacy ID',
+					'instructions' => 'ID for video from previous website',
+					'styles' => [
+						'width' => '25%',
+					],
 				],
-			],
-		]);
+				'legacy_contest_set_pairing' => [
+					'type' => 'number',
+					'instructions' => 'ID for video from previous website',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'legacy_divider' => [
+					'type' => 'divider',
+				],
+			]);
+
+			$fields = array_merge($fields, [
+				'contest_set_pairing' => [
+					'type' => 'typeahead',
+					'search_type' => 'bbs-video', 
+					'search_fields' => [ 
+						'title',
+					],
+					'attributes' => [
+						'placeholder' => 'Type video name',
+					],
+					'additional_fields' => [
+						'song_title' => ['function' => 'static_get_song_title_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+						'contestant' => ['function' => 'static_get_contestant_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+						'video_date' => ['function' => 'static_get_video_date_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+						'district' => ['function' => 'static_get_district_display', 'class' => '\\SquareCoda\\Theme\\Videos'],
+					],
+					'result_template' => Timber::compile('typeahead-results/video.twig'),
+					'multiple' => false,
+					'add_new' => false,
+					'styles' => [
+						'width' => '25%'
+					],
+				],
+				'contest_set_order' => [
+					'type' => 'number',
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'media_quality' => [
+					'type' => 'select',
+					'select_options' => $this->get_media_quality_options(),
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+				'comments' => [
+					'type' => 'textarea',
+					'attributes' => [
+						'rows' => 4,
+					],
+					'styles' => [
+						'width' => '25%',
+					],
+				],
+			]);
+		}
 
 		return $this->encode_json(apply_filters(sprintf('%s/%s/fields', $this->theme_slug, $this->module_slug), $fields, $edit));
 	}
