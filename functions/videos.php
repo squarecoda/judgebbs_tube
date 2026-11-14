@@ -1,4 +1,15 @@
 <?php
+	function single_video_content($content) {
+		global $post;
+
+		if(!empty($post->post_type) && $post->post_type == 'bbs-video') {
+			return '<!-- wp:scfe/video-detail-layout /-->';
+		}
+
+		return $content;
+	}
+	add_filter('the_content', 'single_video_content', 5);
+
 	function get_video_array($post_id, $judge_id = false) {
 		$videos_obj = new SquareCoda\Theme\Videos(false);
 
