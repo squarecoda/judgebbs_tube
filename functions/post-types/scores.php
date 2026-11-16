@@ -51,11 +51,11 @@ class Scores extends Child_Theme {
 				'rewrite' => $this->post_type_slug,
 				'menu_icon' => 'dashicons-yes',
 				'supports' => ['none'],
-				// 'public' => false,
-				// 'publicly_queryable' => false,
-				// 'show_ui' => false,
-				// 'show_in_rest' => false,
-				// 'show_in_menu' => false,
+				'public' => false,
+				'publicly_queryable' => false,
+				'show_ui' => false,
+				'show_in_rest' => false,
+				'show_in_menu' => false,
 			],
 		];
 	}

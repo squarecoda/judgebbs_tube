@@ -178,13 +178,33 @@ body.wp-admin .reference-score-wrapper {
 		padding: 15px 0;
 		font-size: 18px;
 		font-weight: 600;
+		@include flex_row_centered(15px);
+		.reference-score-heading-show-hide {
+			margin-left: auto;
+			&:after {
+				content: 'Hide';
+				cursor: pointer;
+				font-size: 14px;
+			}
+		}
 	}
 	.reference-score-display-wrapper {
 		padding: var(--padding) 0;
-		@include flex_columns(4, var(--padding));
+		display: flex;
+		gap: var(--padding);
 		align-items: flex-start;
-
-
+		justify-content: center;
+		flex-wrap: wrap;
+		.reference-score-inner-wrapper {
+			@include flex_columns(2, var(--padding));
+			justify-content: center;
+			> * {
+				@media (max-width: 400px) {
+					width: 100%;
+					max-width: 250px;
+				}
+			}
+		}
 	}
 	&.contest-scores {
 		background: #889;
@@ -212,6 +232,19 @@ body.wp-admin .reference-score-wrapper {
 				font-size: 20px !important;
 				text-align: center;
 			}
+		}
+	}
+	&.scores-hidden {
+		.reference-score-wrapper-heading {
+			border-bottom: none;
+			.reference-score-heading-show-hide {
+				&:after {
+					content: 'Show';
+				}
+			}
+		}
+		.reference-score-display-wrapper {
+			display: none;
 		}
 	}
 }

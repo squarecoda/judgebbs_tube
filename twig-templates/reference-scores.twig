@@ -1,3 +1,6 @@
+{% set open_by_default = open_by_default ?: false %}
+{% set show_hide_button = not open_by_default %}
+
 {% set id = fn('get_the_id') %}
 
 {% set is_admin = false %}
@@ -5,31 +8,43 @@
 
 {% set reference_scores = fn('get_reference_scores', id) %}
 
-<div class="reference-score-wrapper">
+<div class="reference-score-wrapper {{ show_hide_button ? 'scores-hidden' }}">
 
-	<div class="reference-score-wrapper-heading">Reference Scores</div>
+	<div class="reference-score-wrapper-heading">
+		<div class="reference-score-heading-title">Reference Scores</div>
+		{% if show_hide_button %}
+		<div class="reference-score-heading-show-hide"></div>
+		{% endif %}
+	</div>
 
 	<div class="reference-score-display-wrapper">
 
-		{# Overall Score #}
-		<div class="score-display overall" title="Automatically calculated" post_id="{{ id }}">
-			<div class="score-display-heading">Overall</div>
-			<div class="score-display-body">
-				<div class="score-view">
-					<span class="fas fa-cog fa-spin"></span>
+		<div class="reference-score-inner-wrapper">
+
+			{# Overall Score #}
+			<div class="score-display overall" title="Automatically calculated" post_id="{{ id }}">
+				<div class="score-display-heading">Overall</div>
+				<div class="score-display-body">
+					<div class="score-view">
+						<span class="fas fa-cog fa-spin"></span>
+					</div>
 				</div>
+				{% if is_admin %}
+				<div class="score-display-footer">
+					Auto-calculated
+				</div>
+				{% endif %}
 			</div>
-			{% if is_admin %}
-			<div class="score-display-footer">
-				Auto-calculated
+
+			{% for category, update_history in reference_scores %}
+			{% if category == 'per' %}
 			</div>
+			<div class="reference-score-inner-wrapper">
 			{% endif %}
+				{{ include('reference-score.twig') }}
+			{% endfor %}
+
 		</div>
-
-		{% for category, update_history in reference_scores %}
-			{{ include('reference-score.twig') }}
-		{% endfor %}
-
 	</div>
 
 </div>

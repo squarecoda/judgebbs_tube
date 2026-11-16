@@ -255,6 +255,42 @@ class Videos extends Child_Theme {
 		];
 	}
 
+	public function get_post_display_fields($post_id) {
+		$contestant_obj = new Contestants(false);
+		$contestant_id = $this->get_field('contestant', $post_id);
+		$contestant_array = $contestant_obj->get_post_array($contestant_id);
+
+		//Song Style
+		$style_options = $this->get_song_style_options();
+		$song_style = $this->get_field('song_style', $post_id);
+		$style_display = !empty($song_style) && !empty($style_options[$song_style]) ? $style_options[$song_style] : $song_style;
+
+		return [
+			'song_title' => [
+				'value' => $this->get_field('song_title', $post_id),
+			],
+			'contestant_name' => [
+				'label' => 'Contestant',
+				'value' => $contestant_array['title'],
+			],
+			'song_style' => [
+				'value' => $style_display,
+			],
+			'contestant_type' => [
+				'value' => self::static_get_type_display($post_id),
+			],
+			'contestant_size' => [
+				'value' => (self::static_get_type_display($post_id) != 'Quartet') ? self::static_get_size_display($post_id) : '',
+			],
+			'contestant_age' => [
+				'value' => self::static_get_age_display($post_id),
+			],
+			'contest' => [
+				'value' => self::static_get_contest_display($post_id),
+			],
+		];
+	}
+
 
 	//======================
 	// Post Type Edit Pages
@@ -375,28 +411,19 @@ class Videos extends Child_Theme {
 		$fields = [
 			'song_title',
 			'contestant',
-			'contest_district',
-			'contest_type',
-			'video_date',
 		];
 
 		foreach($fields as $field) $$field = get_post_meta($post_id, $field, true);
 
-		//Options
-		$district_options = $this->get_district_options(true);
-		$type_options = $this->get_contest_type_options();
-
 		//Updates to fields
 		if(!empty($contestant)) $contestant = get_the_title($contestant);
-		if(!empty($district_options[$contest_district])) $contest_district = $district_options[$contest_district];
-		if(!empty($type_options[$contest_type])) $contest_type = $type_options[$contest_type];
-		if(!empty($video_date)) $video_date = date('n/j/Y', strtotime($video_date));
 
-		$event_name = in_array($contest_type, ['District', 'Prelims', 'Divisional']) 
-			? sprintf('%s %s', $contest_district, $contest_type) 
-			: sprintf('%s %s', $contest_type, 'Contest');
+		$contest = self::static_get_contest_display($post_id);
 
-		return sprintf('%s &ndash; %s (%s %s)', $song_title, $contestant, $event_name, $video_date);
+		$title = sprintf('%s &ndash; %s', $song_title, $contestant);
+		if(!empty($contest)) $title .= sprintf(' (%s)', $contest);
+
+		return $title;
 	}
 
 	public function show_name_instead_of_title($post) {
@@ -563,7 +590,7 @@ class Videos extends Child_Theme {
 				'reference_scores' => [
 					'type' => 'html',
 					'label' => ' ',
-					'content' => Timber::compile('reference-scores.twig'),
+					'content' => Timber::compile('reference-scores.twig', ['open_by_default' => true]),
 				],
 				'contest_scores' => [
 					'type' => 'html',
@@ -890,13 +917,59 @@ class Videos extends Child_Theme {
 	}
 
 	static public function static_get_age_display($post_id) {
+		$use_custom = get_post_meta($post_id, 'use_custom_age', true);
+		$meta_value = get_post_meta($post_id, 'custom_contestant_age', true);
+
+		if(!empty($use_custom) && !empty($meta_value)) {
+			$options = Contestants::get_contestant_age_options();
+			return !empty($options[$meta_value]) ? $options[$meta_value] : $meta_value;
+		}
+
 		$contestant = get_post_meta($post_id, 'contestant', true);
 		return Contestants::{__FUNCTION__}($contestant);
 	}
 
 	static public function static_get_size_display($post_id) {
+		$use_custom = get_post_meta($post_id, 'use_custom_size', true);
+		$meta_value = get_post_meta($post_id, 'custom_contestant_size', true);
+
+		if(!empty($use_custom) && !empty($meta_value)) {
+			return $meta_value;
+		}
+
 		$contestant = get_post_meta($post_id, 'contestant', true);
 		return Contestants::{__FUNCTION__}($contestant);
+	}
+
+	static public function static_get_contest_display($post_id) {
+		// $date = get_post_meta($post_id, 'video_date', true);
+		// $district = get_post_meta($post_id, 'contest_district', true);
+		// $type = get_post_meta($post_id, 'contest_type', true);
+
+
+
+		$fields = [
+			'contest_district',
+			'contest_type',
+			'video_date',
+		];
+
+		foreach($fields as $field) $$field = get_post_meta($post_id, $field, true);
+
+		//Options
+		$district_options = self::get_district_options(true);
+		$type_options = self::get_contest_type_options();
+
+		//Updates to fields
+		if(!empty($district_options[$contest_district])) $contest_district = $district_options[$contest_district];
+		if(!empty($type_options[$contest_type])) $contest_type = $type_options[$contest_type];
+		if(!empty($video_date)) $video_date = date('n/j/Y', strtotime($video_date));
+
+		$event_name = in_array($contest_type, ['District', 'Prelims', 'Divisional']) 
+			? sprintf('%s %s', $contest_district, $contest_type) 
+			: sprintf('%s %s', $contest_type, 'Contest');
+
+		return sprintf('%s %s', $event_name, $video_date);
 	}
 
 

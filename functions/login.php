@@ -21,7 +21,7 @@
 	add_filter('show_admin_bar', 'hide_admin_bar_if_non_admin');
 
 	function hide_backend_if_non_editor() {
-		if(!current_user_can('edit_pages')) {
+		if(!current_user_can('edit_pages') && !wp_doing_ajax()) {
 			wp_safe_redirect('/');
 			exit;
 		}

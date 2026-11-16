@@ -1,1 +1,12 @@
-{{ fn('get_the_title') }}
+<div class="video-data">
+
+{% for field, field_info in display_fields %}
+	{% if field_info.value %}
+	<div class="data-field {{ field }}">
+		<div class="data-field-label">{{ field_info.label ?: field|replace({'_': ' '})|title }}</div>
+		<div class="data-field-value">{{ field_info.value }}</div>
+	</div>
+	{% endif %}
+{% endfor %}
+
+</div>

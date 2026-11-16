@@ -37,19 +37,19 @@
 					}
 				}
 			}
-			.video-link {
-				@include flex_single_column(4px);
-				.song-title {
-					font-size: 18px;
-					font-weight: 600;
-				}
-				.contestant {
-					font-size: 14px;
-				}
-			}
 		}
 	}
+}
 
+.video-link {
+	@include flex_single_column(4px);
+	.song-title {
+		font-size: 18px;
+		font-weight: 600;
+	}
+	.contestant {
+		font-size: 14px;
+	}
 }
 
 .total-scores {

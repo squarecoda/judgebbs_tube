@@ -126,7 +126,37 @@ class Playlists extends Child_Theme {
 				'type' => 'true-false',
 				'label' => 'Assigned playlist?',
 				'styles' => [
-					'width' => '25%',
+					'width' => '20%',
+				],
+			],
+			'assigned_blank' => [
+				'type' => 'html',
+				'content' => '',
+				'label' => ' ',
+				'styles' => [
+					'width' => '80%',
+				],				
+				'conditional_rules' => [
+					'hide' => [
+						[
+							'key' => 'scoring',
+							'value' => 'on',
+						],
+					],
+				],
+			],
+			'assigned_due_date' => [
+				'type' => 'datepicker',
+				'styles' => [
+					'width' => '20%',
+				],				
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'scoring',
+							'value' => 'on',
+						],
+					],
 				],
 			],
 			'assigned_categories' => [
@@ -138,26 +168,43 @@ class Playlists extends Child_Theme {
 				],
 				'save_as_json' => true,		
 				'styles' => [
-					'width' => '25%',
-				],				
+					'width' => '20%',
+				],
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'scoring',
+							'value' => 'on',
+						],
+					],
+				],
 			],
 			'assigned_statuses' => [
 				'type' => 'checkbox-list',
 				'checkbox_options' => $this->get_judge_status_options(false),
 				'save_as_json' => true,		
 				'styles' => [
-					'width' => '25%',
-				],				
+					'width' => '20%',
+				],
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'scoring',
+							'value' => 'on',
+						],
+					],
+				],
 			],
 			'assigned_judges' => [
 				'type' => 'typeahead',
 				'label' => 'Assigned Judge(s)',
+				'instructions' => 'If not assigning to entire group, but just to individual judge(s)',
 				'search_type' => 'bbs-judge', 
 				'search_fields' => [ 
 					'title',
 				],
 				'attributes' => [
-					'placeholder' => 'Type judge name',
+					'placeholder' => 'Type judge name(s)',
 				],
 				'additional_fields' => [
 					'judge_category' => ['function' => 'static_get_category_display', 'class' => '\\SquareCoda\\Theme\\Judges'],
@@ -166,8 +213,16 @@ class Playlists extends Child_Theme {
 				'multiple' => true,
 				'add_new' => false,
 				'styles' => [
-					'width' => '25%',
+					'width' => '20%',
 				],				
+				'conditional_rules' => [
+					'show' => [
+						[
+							'key' => 'scoring',
+							'value' => 'on',
+						],
+					],
+				],
 			],
 			'videos' => [
 				'type' => 'array',

@@ -13,6 +13,12 @@ jQuery(document).ready(function($){
 			parentDiv.removeClass('editing');
 		});	
 
+		$('.reference-score-wrapper').on('click', '.reference-score-heading-show-hide', function(){
+			const parentDiv = $(this).closest('.reference-score-wrapper');
+
+			parentDiv.toggleClass('scores-hidden');
+		});
+
 		$('.my-score-wrapper .score-display .score-edit .submit-score-edit').on('click', function(e){
 			e.preventDefault();
 

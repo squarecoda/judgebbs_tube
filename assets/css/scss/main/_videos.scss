@@ -6,11 +6,6 @@ body:has(.scfe-block-wrapper.video-detail-layout) {
 	--sc-header-border-bottom-width: 5px;
 }
 
-.video-display {
-	@include flex_columns(3, 30px);
-	row-gap: 60px;
-}
-
 .single-bbs-video {
 	.entry-title {
 		display: none;
@@ -126,5 +121,34 @@ body:has(.scfe-block-wrapper.video-detail-layout) {
 		height: var(--size);
 		@include flex_center;
 		border-radius: 100%;
+	}
+}
+
+
+.video-detail-layout {
+	.video-display {
+		@include flex_columns(3, 30px);
+		row-gap: 60px;
+		.video-data {
+			--gap: 20px;
+			@include flex_single_column(var(--gap));
+			.data-field {
+				--data-gap: 5px;
+				@include flex_single_column(var(--data-gap));
+				.data-field-label {
+					font-size: 14px;
+				}
+				.data-field-value {
+					font-size: 18px;
+					font-weight: 600;
+				}
+			}
+		}
+		@media (max-width: 800px) {
+			@include flex_columns(2, 30px);
+		}
+		@media (max-width: 500px) {
+			@include flex_columns(1, 30px);
+		}
 	}
 }

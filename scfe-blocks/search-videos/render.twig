@@ -10,7 +10,10 @@
 
 		{% for video in videos.results %}
 		<div class="video-post">
-			<a href="{{ video.url }}">{{ video.contestant.title }} - {{ video.song_title }}</a>
+			<a class="video-link" href="{{ video.url }}">
+				<div class="song-title">{{ video.song_title }}</div>
+				<div class="contestant">{{ video.contestant.title }}</div>
+			</a>
 		</div>
 		{% endfor %}
 	</div>

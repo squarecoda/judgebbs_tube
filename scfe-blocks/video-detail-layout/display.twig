@@ -2,6 +2,8 @@
 	{% set playlist_id = fn('get_playlist_from_slug', get.playlist) %}
 {% endif %}
 
+{% set hide_scores = playlist_id ? fn('get_post_meta', playlist_id, 'hide_scores', true) : false %}
+
 <div class="video-display">
 
 	{% if playlist_id %}
@@ -22,9 +24,11 @@
 		{{ include('video-detail/data.twig') }}
 	</div>
 
+	{% if not hide_scores %}
 	<div class="scores large">
 		{{ include('reference-scores.twig') }}
 	</div>
+	{% endif %}
 
 	{% if playlist_id %}
 	<div class="sticky-footer full">
