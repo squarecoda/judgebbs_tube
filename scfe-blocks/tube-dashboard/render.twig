@@ -1,3 +1,10 @@
+{% set assigned_playlists = fn('get_playlists', 'assigned') %}
+{% set personal_playlists = fn('get_playlists', 'personal') %}
+{% set public_playlists = fn('get_playlists', 'public') %}
+
+{% set current_judge_id = fn('get_current_judge_id') %}
+
+
 {% set widgets = [
 	{
 		heading: 'Profile',
@@ -11,8 +18,16 @@
 		heading: 'Assigned Playlists',
 		body: include('widgets/assigned-playlists.twig', { show_due_date: true }),
 		cta: {
-			text: 'See All',
-			url: '#saved-videos',
+			text: 'All Playlists',
+			url: '/playlists',
+		},
+	},
+	{
+		heading: 'Personal Playlists',
+		body: include('playlist-landing-results.twig', { results: personal_playlists, limit: 3 }),
+		cta: {
+			text: 'All Playlists',
+			url: '/playlists',
 		},
 	},
 ] %}
