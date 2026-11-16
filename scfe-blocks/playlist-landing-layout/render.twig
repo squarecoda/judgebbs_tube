@@ -1,0 +1,24 @@
+{% set current_judge_id = fn('get_current_judge_id') %}
+
+{% set assigned_playlists = fn('get_playlists', 'assigned') %}
+{% set personal_playlists = fn('get_playlists', 'personal') %}
+{% set public_playlists = fn('get_playlists', 'public') %}
+
+<div class="widget-wrapper">
+		
+	<div class="widget assigned full">
+		<div class="widget-heading">Assigned Playlists ({{ assigned_playlists|length }})</div>
+		<div class="widget-body">{{ include('playlist-landing-results.twig', { results: assigned_playlists, show_due_date: true }) }}</div>
+	</div>
+
+	<div class="widget personal">
+		<div class="widget-heading">Personal Playlists ({{ assigned_playlists|length }})</div>
+		<div class="widget-body">{{ include('playlist-landing-results.twig', { results: personal_playlists }) }}</div>
+	</div>
+
+	<div class="widget public">
+		<div class="widget-heading">Public Playlists ({{ public_playlists|length }})</div>
+		<div class="widget-body">{{ include('playlist-landing-results.twig', { results: public_playlists }) }}</div>
+	</div>
+
+</div>

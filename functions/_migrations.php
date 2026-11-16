@@ -207,3 +207,25 @@
 		}
 	}	
 	// add_action('admin_init', 'script_update_score_typeaheads');
+
+	function add_sort_order_to_playlists() {
+		if(current_user_can('administrator') && !empty($_GET[__FUNCTION__]) && $_GET[__FUNCTION__] == 'true') {
+			$results = get_posts([
+				'post_type' => 'bbs-playlist',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+			]);
+
+			foreach($results as $result_id) {
+				$sort_order = get_post_meta($result_id, 'playlist_sort_order', true);
+				if(empty($sort_order)) {
+					$legacy_id = get_post_meta($result_id, 'legacy_id', true);
+					$sort_order = !empty($legacy_id) ? $legacy_id : get_post_time('U', true, $result_id);
+					display_result($sort_order);
+					update_post_meta($result_id, 'playlist_sort_order', $sort_order);
+				}
+			}
+			wp_die();
+		}
+	}
+	add_action('admin_init', 'add_sort_order_to_playlists');	

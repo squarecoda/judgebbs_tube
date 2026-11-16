@@ -196,13 +196,18 @@ body.wp-admin .reference-score-wrapper {
 		justify-content: center;
 		flex-wrap: wrap;
 		.reference-score-inner-wrapper {
+			min-width: calc(50% - var(--padding) / 2);
 			@include flex_columns(2, var(--padding));
+			flex-wrap: nowrap;
 			justify-content: center;
 			> * {
 				@media (max-width: 400px) {
 					width: 100%;
 					max-width: 250px;
 				}
+			}
+			@media (max-width: 400px) {
+				flex-wrap: wrap;
 			}
 		}
 	}

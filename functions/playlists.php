@@ -74,3 +74,99 @@
 
 		return $details;
 	}
+
+	function get_playlists($type = 'personal', $judge_id = '') {
+		if(empty($judge_id)) $judge_id = get_current_judge_id();
+
+		$meta_query = [];
+		if($type == 'personal') {
+			$meta_query[] = [
+				'key' => 'judge',
+				'value' => $judge_id,
+			];
+			$results = get_posts([
+				'post_type' => 'bbs-playlist',
+				'posts_per_page' => -1,
+				'meta_query' => $meta_query,
+				'orderby' => 'meta_value_num',
+				'order' => 'DESC',
+				'meta_key' => 'playlist_sort_order',
+				'fields' => 'ids',
+			]);
+		} elseif($type == 'public') {
+			$meta_query[] = [
+				'key' => 'public',
+				'value' => 'on',
+			];
+			$results = get_posts([
+				'post_type' => 'bbs-playlist',
+				'posts_per_page' => -1,
+				'meta_query' => $meta_query,
+				'orderby' => 'meta_value_num',
+				'order' => 'DESC',
+				'meta_key' => 'playlist_sort_order',
+				'fields' => 'ids',
+			]);
+		} elseif($type == 'assigned') {
+			$category = get_post_meta($judge_id, 'judge_category', true);
+			$status = get_post_meta($judge_id, 'status', true);
+
+			$individual_assignemnts = get_posts([
+				'post_type' => 'bbs-playlist',
+				'posts_per_page' => -1,
+				'meta_query' => [
+					[
+						'key' => 'assigned_judges',
+						'value' => '"' . $judge_id . '"',
+						'compare' => 'LIKE',
+					],
+				],
+				'fields' => 'ids',
+			]);
+
+			$group_assignemnts = get_posts([
+				'post_type' => 'bbs-playlist',
+				'posts_per_page' => -1,
+				'meta_query' => [
+					[
+						'key' => 'assigned_categories',
+						'value' => '"' . $category . '"',
+						'compare' => 'LIKE',
+					],
+					[
+						'key' => 'assigned_statuses',
+						'value' => '"' . $status . '"',
+						'compare' => 'LIKE',
+					],
+				],
+				'fields' => 'ids',
+			]);
+
+			$results = array_merge($individual_assignemnts, $group_assignemnts);
+		}
+
+		if(in_array($type, ['personal', 'assigned'])) {
+			foreach($results as $index => $result_id) {
+				$results[$index] = get_playlist_details($result_id, $judge_id);
+			}
+		} else {
+			foreach($results as $index => $result_id) {
+				$results[$index] = [
+					'id' => $result_id
+				];
+			}			
+		}
+
+		return $results;
+	}
+
+	function get_playlist_creator($playlist_id) {
+		$creator = get_post_meta($playlist_id, 'judge', true);
+		return $creator ? get_the_title($creator) : '';
+	} 
+
+	function get_playlist_due_date($playlist_id) {
+		$assigned = get_post_meta($playlist_id, 'scoring', true);
+		$due_date = get_post_meta($playlist_id, 'assigned_due_date', true);
+		return !empty($assigned) && !empty($due_date) ? date('n/j/Y', strtotime($due_date)) : '';
+	} 

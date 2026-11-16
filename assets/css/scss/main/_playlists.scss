@@ -60,12 +60,50 @@
 		@include flex_single_column(6px);
 		&:has(.playlist-title) {
 			.playlist-title {
-				font-size: 20px;
+				font-size: 18px;
+				@include flex_row_centered(10px);
+				display: flex;
+				.private {
+					font-size: 14px;
+					line-height: 1;
+					background: #cfcfd4;
+					padding: 2px 8px 2px 8px;
+					font-style: italic;
+					border-radius: 40px;
+					font-weight: 500;
+				}
 			}
-			.score-total {
-				font-size: 16px;
+			.playlist-subtitle {
+				font-size: 14px;
 				font-weight: 500;
+				@include flex_row_centered(10px);
+				.due-date {
+					font-size: 14px;
+					line-height: 1;
+					background: #445;
+					color: white;
+					padding: 2px 9px 2px 8px;
+					border-radius: 40px;
+					font-weight: 500;
+				}
 			}
 		}
+	}
+}
+
+.widget {
+	.widget-body {
+		.playlist-results {
+			--row-gap: 10px;
+			@include flex_single_column(var(--row-gap));
+		}
+	}
+}
+
+.playlist-landing-wrapper {
+	--gap: 30px;
+	@include flex_columns(2, var(--gap));
+	.playlist-wrapper {
+
 	}
 }

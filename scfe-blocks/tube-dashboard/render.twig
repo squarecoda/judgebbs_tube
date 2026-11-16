@@ -9,7 +9,7 @@
 	},
 	{
 		heading: 'Assigned Playlists',
-		body: include('widgets/assigned-playlists.twig'),
+		body: include('widgets/assigned-playlists.twig', { show_due_date: true }),
 		cta: {
 			text: 'See All',
 			url: '#saved-videos',
