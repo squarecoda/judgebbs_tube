@@ -1,0 +1,51 @@
+{% set meta_fields = meta_fields ?: {
+	email: 'envelope',
+	home_phone: 'phone',
+	cell_phone: 'mobile-screen',
+	address_1: 'house',
+	district: 'map-location-dot',
+	airports: 'plane'
+} %}
+
+{% set vars = vars ?: _context %}
+
+<div class="judge-detail">
+	{% if headshot %}	
+	<div class="headshot-wrapper">
+		<img class="headshot {{ vars.judge_category }}" src="{{ fn('wp_get_attachment_image_url', vars.headshot, 'medium') }}">
+	</div>
+	{% endif %}	
+
+	<div class="info-wrapper">
+
+		<div class="name">{{ vars.title }}</div>
+
+		{% if vars.judge_category or vars.status %}
+		<div class="subtitle {{ vars.judge_category }}">
+
+				{% if vars.judge_category %}
+				<div class="category">{{ vars.judge_category|upper }}</div>
+				{% endif %}
+
+				{% if vars.status %}
+				<div class="status">{{ fn('apply_filters', 'bbs/meta_display/judge/status', vars.status) }}{{ vars.status == 'active' and vars.year_certified ? ' ' ~ vars.year_certified }}</div>
+				{% endif %}
+
+		</div>
+		{% endif %}
+
+		<div class="meta-wrapper">
+
+			{% for field, icon in meta_fields %}
+				{% if vars[field] %}
+				<div class="meta-field {{ field }}" title="{{ field|replace({'_': ' ', 'address_1': 'home address'})|title }}">
+					<div class="meta-field-icon"><span class="fas fa-{{ icon }}"></span></div>
+					<div class="meta-field-value">{{ fn('apply_filters', 'bbs/meta_display/judge/' ~ field, vars[field], _context) }}</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+
+		</div>
+
+	</div>
+</div>

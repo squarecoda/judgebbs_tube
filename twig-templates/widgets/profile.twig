@@ -1,1 +1,41 @@
-{{ _self }}
+{% set current_judge_id = fn('get_current_judge_id') %}
+
+{% set headshot = fn('get_post_meta', current_judge_id, 'headshot', true) %}
+
+{% set non_meta_fields = [
+	'headshot',
+	'judge_category',
+	'status',
+] %}
+
+{% set meta_fields = {
+	email: 'envelope',
+	home_phone: 'phone',
+	cell_phone: 'mobile-screen',
+	district: 'map-location-dot',
+} %}
+
+{% set vars = {
+	title: fn('get_the_title', current_judge_id),
+} %}
+
+{% for field in non_meta_fields %}
+	{% set vars = vars|merge({
+		(field): fn('get_post_meta', current_judge_id, field, true),
+	}) %}
+{% endfor %}
+
+{% for field, icon in meta_fields %}
+	{% set vars = vars|merge({
+		(field): fn('get_post_meta', current_judge_id, field, true),
+	}) %}
+{% endfor %}
+
+
+<div class="judge-widget">
+
+	{{ include('judge-detail-layout/display.twig') }}
+
+	<a class="reset-password" href="{{ fn('wp_lostpassword_url') }}">Reset Password</a>
+
+</div>

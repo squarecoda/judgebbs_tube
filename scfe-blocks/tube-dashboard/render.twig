@@ -10,7 +10,7 @@
 		body: include('widgets/profile.twig'),
 		cta: {
 			text: 'View Profile',
-			url: '#profile',
+			url: fn('get_the_permalink', current_judge_id),
 		},
 	},
 	{
