@@ -3,24 +3,23 @@
 
 {% set creator = fn('get_playlist_creator', playlist_details.id) %}
 {% set due_date = fn('get_playlist_due_date', playlist_details.id) %}
-{% set private = not fn('get_post_meta', playlist_details.id, 'public', true) %}
-
+{% set public = fn('get_post_meta', playlist_details.id, 'public', true) %}
+{% set video_count = fn('get_video_count', playlist_details.id) %}
 
 {% set creator = '' %}
 
 <div class="total-scores">
 	{% if playlist_details.score_number is defined and playlist_details.video_number is defined %}
 	<div class="circle-progress {{ fn('get_judge_category', current_judge_id) }}" amount="{{ playlist_details.score_number }}" total="{{ playlist_details.video_number }}"></div>
+	{% elseif public %}
+	<div class="fas fa-globe" title="Public"></div>
+	{% else %}
+	<div class="fas fa-key" title="Private"></div>
 	{% endif %}
 	<div class="score-text">
 		{% if show_title %}
 		<div class="playlist-title">
 			{{ fn('get_the_title', playlist_details.id) }} 
-
-			{% if private %}
-			<div class="private">Private</div>
-			{% endif %}
-
 		</div>
 		{% endif %}
 
@@ -28,6 +27,8 @@
 
 			{% if playlist_details.score_number is defined and playlist_details.video_number is defined %}
 			<div class="score-total">{{ playlist_details.score_number }}/{{ playlist_details.video_number }} complete</div>
+			{% else %}
+			<div class="video-count" title="Video Count"><span class="fas fa-video"></span> {{ video_count }}</div>
 			{% endif %}
 
 			{% if creator %}

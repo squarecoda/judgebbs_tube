@@ -1,3 +1,15 @@
+@mixin large_fa_icon {
+	--size: 48px;
+	font-size: 28px;
+	background: #445;
+	color: white;
+	border-radius: 100%;
+	@include flex_center;
+	width: var(--size);
+	height: var(--size);
+	align-self: flex-start;
+}
+
 .playlist-display {
 	@include flex_single_column(50px);
 	.playlist-videos {
@@ -37,6 +49,12 @@
 					}
 				}
 			}
+			> .fas {
+				@include large_fa_icon;
+				--size: 42px;
+				font-size: 20px;
+				align-self: center;
+			}
 		}
 	}
 }
@@ -56,6 +74,9 @@
 	font-size: 18px;
 	font-weight: 600;
 	@include flex_row_centered(10px);
+	> .fas {
+		@include large_fa_icon;
+	}
 	.score-text {
 		@include flex_single_column(6px);
 		&:has(.playlist-title) {

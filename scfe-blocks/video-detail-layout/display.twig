@@ -3,6 +3,7 @@
 {% endif %}
 
 {% set hide_scores = playlist_id ? fn('get_post_meta', playlist_id, 'hide_scores', true) : false %}
+{% set scoring = playlist_id ? fn('get_post_meta', playlist_id, 'scoring', true) : false %}
 
 <div class="video-display">
 
@@ -16,9 +17,11 @@
 		{{ include('video-detail/video.twig') }}
 	</div>
 
+	{% if scoring %}
 	<div class="my-score-wrapper">
 		{{ include('video-detail/my-score.twig') }}
 	</div>
+	{% endif %}
 
 	<div class="data">
 		{{ include('video-detail/data.twig') }}

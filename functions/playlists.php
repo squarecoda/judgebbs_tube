@@ -58,9 +58,11 @@
 		if(!empty($videos)) $videos = $videos_obj->decode_json($videos);
 
 		$score_number = 0;
-		foreach($videos as $video) {
-			$video_array = get_video_array($videos_obj->get_int_from_typeahead_field($video['video']), $judge_id);
-			if(!empty($video_array['score'])) $score_number++;
+		if(!empty($videos)) {
+			foreach($videos as $video) {
+				$video_array = get_video_array($videos_obj->get_int_from_typeahead_field($video['video']), $judge_id);
+				if(!empty($video_array['score'])) $score_number++;
+			}
 		}
 
 		$details = [
@@ -75,7 +77,14 @@
 		return $details;
 	}
 
-	function get_playlists($type = 'personal', $judge_id = '') {
+	function get_video_count($playlist_id) {
+		$videos_obj = new SquareCoda\Theme\Videos(false);
+		$videos = get_post_meta($playlist_id, 'videos', true);
+		if(!empty($videos)) $videos = $videos_obj->decode_json($videos);
+		return !empty($videos) ? count($videos) : 0;
+	}
+
+	function get_playlists($type = 'personal', $judge_id = '', $limit = -1) {
 		if(empty($judge_id)) $judge_id = get_current_judge_id();
 
 		$meta_query = [];
@@ -86,7 +95,7 @@
 			];
 			$results = get_posts([
 				'post_type' => 'bbs-playlist',
-				'posts_per_page' => -1,
+				'posts_per_page' => $limit,
 				'meta_query' => $meta_query,
 				'orderby' => 'meta_value_num',
 				'order' => 'DESC',
@@ -145,9 +154,17 @@
 			$results = array_merge($individual_assignemnts, $group_assignemnts);
 		}
 
-		if(in_array($type, ['personal', 'assigned'])) {
+		if(in_array($type, ['assigned'])) {
+			$i = 0;
 			foreach($results as $index => $result_id) {
-				$results[$index] = get_playlist_details($result_id, $judge_id);
+				if($i < 10) {
+					$results[$index] = get_playlist_details($result_id, $judge_id);
+				} else {
+					$results[$index] = [
+						'id' => $result_id
+					];
+				}
+				$i++;
 			}
 		} else {
 			foreach($results as $index => $result_id) {

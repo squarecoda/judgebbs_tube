@@ -1,6 +1,5 @@
-{% set assigned_playlists = fn('get_playlists', 'assigned') %}
-{% set personal_playlists = fn('get_playlists', 'personal') %}
-{% set public_playlists = fn('get_playlists', 'public') %}
+{% set personal_playlists = fn('get_playlists', 'personal', '', 3) %}
+{% set assigned_playlists = fn('get_playlists', 'assigned', '', 3) %}
 
 {% set current_judge_id = fn('get_current_judge_id') %}
 
@@ -16,7 +15,7 @@
 	},
 	{
 		heading: 'Assigned Playlists',
-		body: include('widgets/assigned-playlists.twig', { show_due_date: true }),
+		body: include('playlist-landing-results.twig', { results: assigned_playlists }),
 		cta: {
 			text: 'All Playlists',
 			url: '/playlists',
