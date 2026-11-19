@@ -24,6 +24,9 @@ class Playlists extends Child_Theme {
 			// Post Type Edit Pages
 			add_action('edit_form_after_title', [$this, 'custom_edit_form']);
 
+			// Field Formatting
+			add_action('sc_field_editor/after_process_fields', [$this, 'update_playlist_sort_order_on_save']);
+
 			// Custom Fields
 			add_shortcode(sprintf('sc_meta_fields_%s', $this->post_type), [$this, 'custom_fields']);
 		}
@@ -74,6 +77,21 @@ class Playlists extends Child_Theme {
 
 		if($post->post_type == $this->post_type) {
 			echo do_shortcode('[sc_meta_form back_end="true" post_type="' . $post->post_type . '" post_id="' . $post->ID . '"]');
+		}
+	}
+
+
+	//====================
+	// Field Formatting
+	//====================
+	public function update_playlist_sort_order_on_save($playlist_id) {
+		if(get_post_type($post_id) == $this->post_type) {
+			$sort_order = get_post_meta($playlist_id, 'playlist_sort_order', true);
+			if(empty($sort_order)) {
+				$legacy_id = get_post_meta($playlist_id, 'legacy_id', true);
+				$sort_order = !empty($legacy_id) ? $legacy_id : get_post_time('U', true, $playlist_id);
+				update_post_meta($playlist_id, 'playlist_sort_order', $sort_order);
+			}
 		}
 	}
 
