@@ -3,8 +3,48 @@
 
 {% set playlist_details = fn('get_playlist_details', post_id, current_judge_id) %}
 {% set scoring = fn('get_post_meta', post_id, 'scoring', true) %}
+{% set creator = fn('get_post_meta', post_id, 'judge', true) %}
+{% set public = fn('get_post_meta', post_id, 'public', true) %}
 
 <div class="playlist-display">
+
+	{% if creator == current_judge_id %}
+	<div class="playlist-privacy {{ public == 'on' ? 'public' : '' }}">
+
+		<div class="privacy-setting public">
+			<div class="privacy-description">
+				<span class="fas fa-globe"></span> Public Playlist
+			</div>
+			<div class="update-playlist-privacy" direction="private" playlist_id="{{ post_id }}">Make Private</div>
+		</div>
+
+		<div class="privacy-setting private">
+			<div class="privacy-description">
+				<span class="fas fa-key"></span> Private Playlist
+			</div>
+			<div class="update-playlist-privacy" direction="public" playlist_id="{{ post_id }}">Make Public</div>
+		</div>
+
+		<div class="updating-privacy"><span class="fas fa-cog fa-spin"></span> Updating privacy...</div>
+
+	</div>
+	{% else %}
+	<div class="playlist-privacy {{ public == 'on' ? 'public' : '' }}">
+
+		<div class="privacy-setting public">
+			<div class="privacy-description">
+				<span class="fas fa-globe"></span> Public Playlist
+			</div>
+		</div>
+
+		<div class="privacy-setting private">
+			<div class="privacy-description">
+				<span class="fas fa-key"></span> Private Playlist
+			</div>
+		</div>
+
+	</div>
+	{% endif %}
 
 	<div class="playlist-videos">
 		{% for video in videos %}
@@ -18,7 +58,10 @@
 				{% endif %}
 				<div class="video-link">
 					<div class="song-title">#{{ loop.index }} {{ video.song_title }}</div>
-					<div class="contestant">{{ video.contestant.title }}</div>
+					<div class="subtitle">
+						<div class="contestant">{{ video.contestant.title }}</div>
+						<div class="video-date">{{ video.date }}</div>
+					</div>
 				</div>
 			</a>
 		{% endfor %}

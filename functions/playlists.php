@@ -190,8 +190,9 @@
 
 	function bbs_load_personal_playlists() {
 		$playlists = get_playlists('personal', $_POST['judge_id']);
+		$judge_id = $_POST['judge_id'];
 
-		$html = Timber::compile('modal-playlists.twig', compact('playlists'));
+		$html = Timber::compile('modal-playlists.twig', compact('playlists', 'judge_id'));
 
 		$postfields = $_POST;
 		echo json_encode(compact('html', 'playlists', 'postfields'));
@@ -225,4 +226,70 @@
 		exit;
 	}
 	$ajax_action = 'bbs_update_playlist_videos';
+	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);
+
+	function bbs_create_playlist() {
+		$postfields = $_POST;
+
+		if(!empty($_POST['judge_id']) && !empty($_POST['title'])) {
+			$playlist_id = wp_insert_post([
+				'post_type' => 'bbs-playlist',
+				'post_title' => $_POST['title'],
+				'post_status' => 'publish',
+				'meta_input' => [
+					'judge' => $_POST['judge_id'],
+					'public' => $_POST['public'],
+				],
+			]);
+
+			update_post_meta($playlist_id, 'playlist_sort_order', get_post_time('U', true, $playlist_id));
+			echo json_encode(compact('playlist_id', 'postfields'));
+			exit;
+		}
+
+		echo json_encode(compact('postfields'));
+
+		exit;
+	}
+	$ajax_action = 'bbs_create_playlist';
+	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);
+
+	// function bbs_delete_playlist() {
+	// 	$postfields = $_POST;
+
+	// 	if(!empty($_POST['playlist_id'])) {
+	// 		// $playlist_id = wp_insert_post([
+	// 		// 	'post_type' => 'bbs-playlist',
+	// 		// 	'post_title' => $_POST['title'],
+	// 		// 	'post_status' => 'publish',
+	// 		// 	'meta_input' => [
+	// 		// 		'judge' => $_POST['judge_id'],
+	// 		// 		'public' => $_POST['public'],
+	// 		// 	],
+	// 		// ]);
+
+	// 		// update_post_meta($playlist_id, 'playlist_sort_order', get_post_time('U', true, $playlist_id));
+	// 		// echo json_encode(compact('playlist_id', 'postfields'));
+	// 		exit;
+	// 	}
+
+	// 	echo json_encode(compact('postfields'));
+
+	// 	exit;
+	// }
+	// $ajax_action = 'bbs_delete_playlist';
+	// add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);
+
+	function bbs_update_playlist_privacy() {
+		$postfields = $_POST;
+
+		if(!empty($_POST['playlist_id']) && !empty($_POST['direction'])) {
+			$value = $_POST['direction'] == 'public' ? 'on' : '';
+			update_post_meta($_POST['playlist_id'], 'public', $value);
+		}
+
+		echo json_encode(compact('postfields'));
+		exit;
+	}
+	$ajax_action = 'bbs_update_playlist_privacy';
 	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);

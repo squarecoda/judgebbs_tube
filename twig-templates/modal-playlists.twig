@@ -8,4 +8,18 @@
 {% endif %}
 </div>
 
-<div class="create-playlist"><span class="fas fa-plus"></span> Create Playlist</div>
+<div class="create-playlist-wrapper">
+	<div class="create-playlist"><span class="fas fa-plus"></span> Create Playlist</div>
+</div>
+
+<div class="playlist-create">
+	<div class="input-wrapper">
+		<input type="text" name="post_title" placeholder="Playlist Title">
+	</div>
+	<div class="input-wrapper">
+		<input type="checkbox" name="public" id="playlist-create--public-playlist"><label for="playlist-create--public-playlist">Public Playlist?</label>
+	</div>
+	<div class="input-wrapper">
+		<button class="create-new-playlist-submit" judge_id="{{ judge_id }}">Create New Playlist</button>
+	</div>
+</div>

@@ -126,4 +126,59 @@ jQuery(document).ready(function($){
 			parentDiv.find('.video-count').html('<span class="fas fa-video"></span> ' + responseJson.playlist_videos.length);
 		});
 	}
+
+	$('#add-video-to-playlist-modal').on('click', '.create-playlist', function(){
+		const parentDiv = $(this).closest('.scfe-modal-body');
+		parentDiv.addClass('creating-playlist');
+	});
+
+	$('#add-video-to-playlist-modal').on('click', '.create-new-playlist-submit', function(){
+		const modalBodyDiv = $(this).closest('.scfe-modal-body');
+
+		const formDiv = $(this).closest('.playlist-create');
+
+		const videoId = $('#modal-playlists-wrapper').attr('video_id');
+
+		const judgeId = $(this).attr('judge_id');
+		const title = formDiv.find('input[name="post_title"]').val();
+		const public = formDiv.find('input[name="public"]').prop('checked');
+
+		if(!title) return window.alert('Title is required');
+
+		modalBodyDiv.html('<div class="loading-playlists"><span class="fas fa-cog fa-spin"></span> Creating New Playlist...</div><div id="modal-playlists-wrapper" class="processing"></div>');
+
+		const data = {
+			action: 'bbs_create_playlist',
+			judge_id: judgeId,
+			title: title,
+			public: public ? 'on' : '',
+		};
+
+		console.log(data);
+
+		$.post('/wp-admin/admin-ajax.php', data, function(response){
+			console.log(response);
+			const responseJson = JSON.parse(response);
+			console.log(responseJson);
+
+			const secondaryData = {
+				action: 'bbs_load_personal_playlists',
+				judge_id: judgeId,
+			};
+
+			$.post('/wp-admin/admin-ajax.php', secondaryData, function(secondaryResponse){
+				console.log(secondaryResponse);
+				const secondaryResponseJson = JSON.parse(secondaryResponse);
+				console.log(secondaryResponseJson);
+
+				modalBodyDiv.find('#modal-playlists-wrapper').html(secondaryResponseJson.html).attr('video_id', videoId);
+				const playlistsDiv = modalBodyDiv.find('.modal-playlists');
+				markVideosAddedToPlaylist(playlistsDiv, videoId);
+				modalBodyDiv.find('#modal-playlists-wrapper').removeClass('processing');
+				modalBodyDiv.find('.loading-playlists').remove();
+				modalBodyDiv.removeClass('creating-playlist');
+			});
+		});
+
+	});
 });
