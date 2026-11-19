@@ -99,6 +99,32 @@ jQuery(document).ready(function($){
 		updatePlaylistVideos($(this), 'remove');
 	});
 
+	$('.playlist-display .video-post').on('click', '.fas.fa-minus', function(){
+		const parentDiv = $(this).closest('.video-post');
+
+		const videoId = $(this).attr('video_id');
+		const playlistId = $(this).attr('playlist_id');
+		
+		const data = {
+			action: 'bbs_update_playlist_videos',
+			playlist_id: playlistId,
+			video_id: videoId,
+			direction: 'remove'
+		};
+		console.log(data);
+
+		parentDiv.css('opacity', '.5');
+
+		$.post('/wp-admin/admin-ajax.php', data, function(response){
+			console.log(response);
+			const responseJson = JSON.parse(response);
+			console.log(responseJson);
+
+			if(responseJson.playlist_videos) parentDiv.remove();
+			window.location.reload();
+		});
+	});
+
 	function updatePlaylistVideos(el, direction) {
 		const parentDiv = el.closest('.modal-playlist');
 

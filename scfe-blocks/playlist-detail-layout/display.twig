@@ -50,20 +50,24 @@
 		{% for video in videos %}
 			{% set video = fn('get_video_array', video.video, current_judge_id) %}
 
-			<a class="video-post" href="{{ video.url }}?playlist={{ post_slug }}&order={{ loop.index }}">
+			<div class="video-post">
 				{% if scoring %}
 					{% include 'playlist-video-score.twig' %}
 				{% else %}
 					<div class="fas fa-video"></div>
 				{% endif %}
 				<div class="video-link">
-					<div class="song-title">#{{ loop.index }} {{ video.song_title }}</div>
+					<a class="song-title" href="{{ video.url }}?playlist={{ post_slug }}&order={{ loop.index }}">#{{ loop.index }} {{ video.song_title }}</a>
 					<div class="subtitle">
 						<div class="contestant">{{ video.contestant.title }}</div>
 						<div class="video-date">{{ video.date }}</div>
 					</div>
 				</div>
-			</a>
+
+				{% if creator == current_judge_id %}
+				<div class="fas fa-minus" title="Remove from playlist" video_id="{{ video.id }}" playlist_id="{{ post_id }}"></div>
+				{% endif %}
+			</div>
 		{% endfor %}
 	</div>
 
