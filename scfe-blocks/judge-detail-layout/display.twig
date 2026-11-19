@@ -27,7 +27,7 @@
 				<div class="category">{{ vars.judge_category|upper }}</div>
 				{% endif %}
 
-				{% if vars.status %}
+				{% if vars.status and vars.status != 'not_certified' and vars.status != 'inactive' %}
 				<div class="status">{{ fn('apply_filters', 'bbs/meta_display/judge/status', vars.status) }}{{ vars.status == 'active' and vars.year_certified ? ' ' ~ vars.year_certified }}</div>
 				{% endif %}
 

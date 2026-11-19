@@ -1,9 +1,9 @@
 {% if results|length %}
 <div class="playlist-results">
 	{% for playlist in (limit is defined ? results|slice(0, limit) : results) %}
-	<a href="{{ fn('get_the_permalink', playlist.id) }}{{ current_judge_id ? '?judge_id=' ~ current_judge_id }}">
+	<div class="playlist-result">
 		{{ include('playlist-percentage.twig', { playlist_details: playlist, show_title: true }) }}
-	</a>
+	</div>
 	{% endfor %}
 </div>
 {% else %}

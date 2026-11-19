@@ -77,15 +77,24 @@
 		align-items: center;
 		--gap: 15px;
 		.headshot-wrapper {
-			max-width: 170px;
+			max-width: 150px;
 		}
 		.info-wrapper {
 			align-items: center;
+			.name {
+				font-size: 20px;
+			}
+			.subtitle {
+				font-size: 18px;
+				padding: 4px 12px;
+			}
+			.meta-wrapper{
+				font-size: 16px;
+			}
 		}
 	}
 
 	.reset-password {
-		font-size: 18px;
 		text-align: center;
 	}
 }

@@ -59,14 +59,103 @@
 	}
 }
 
-.video-link {
-	@include flex_single_column(4px);
-	.song-title {
+.video-post {
+	--gap: 10px;
+	@include flex_row_centered(var(--gap));
+	.add-to-playlist {
+		--size: 36px;
+		width: var(--size);
+		height: var(--size);
+		@include flex_center;
+		background: #445;
+		color: white;
+		border-radius: 100%;
+		flex-shrink: 0;
+		cursor: pointer;
 		font-size: 18px;
-		font-weight: 600;
 	}
-	.contestant {
-		font-size: 14px;
+	.video-link {
+		--gap: 2px;
+		@include flex_single_column(var(--gap));
+		.song-title {
+			font-size: 18px;
+			font-weight: 600;
+		}
+		.subtitle {
+			font-size: 14px;
+			@include flex_row_centered(8px);
+		}
+	}
+}
+
+#add-video-to-playlist-modal {
+	.loading-playlists {
+		font-size: 18px;
+		@include flex_row_centered(10px);
+		justify-content: center;
+	}
+	.modal-playlists {
+		--gap: 10px;
+		@include flex_single_column(var(--gap));
+		.modal-playlist {
+			.total-scores {
+				> .fas {
+					--size: 40px;
+					font-size: 20px;
+
+					&.fa-plus,
+					&.fa-minus,
+					&.fa-cog,
+					&.fa-check {
+						margin-left: auto;
+					}
+					&.fa-plus,
+					&.fa-minus {
+						cursor: pointer;
+					}
+					&.fa-minus,
+					&.fa-check,
+					&.fa-cog {
+						display: none;
+					}
+					&.fa-minus {
+						background: #D53838;
+					}
+					&.fa-check {
+						background: #118942;
+					}
+				}
+			}
+			.score-text {
+				gap: 2px;
+			}
+			&.added {
+				.fas.fa-check {
+					display: flex;
+				}
+				.fas.fa-plus {
+					display: none;
+				}
+				&:hover {
+					.fas.fa-minus {
+						display: flex;
+					}
+					.fas.fa-check {
+						display: none;
+					}
+				}
+			}
+			&.processing {
+				.fas.fa-cog {
+					display: flex !important;
+				}
+				.fas.fa-plus,
+				.fas.fa-check,
+				.fas.fa-minus {
+					display: none !important;
+				}
+			}
+		}
 	}
 }
 

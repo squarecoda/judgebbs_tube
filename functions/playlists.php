@@ -187,3 +187,42 @@
 		$due_date = get_post_meta($playlist_id, 'assigned_due_date', true);
 		return !empty($assigned) && !empty($due_date) ? date('n/j/Y', strtotime($due_date)) : '';
 	} 
+
+	function bbs_load_personal_playlists() {
+		$playlists = get_playlists('personal', $_POST['judge_id']);
+
+		$html = Timber::compile('modal-playlists.twig', compact('playlists'));
+
+		$postfields = $_POST;
+		echo json_encode(compact('html', 'playlists', 'postfields'));
+		exit;
+	}
+	$ajax_action = 'bbs_load_personal_playlists';
+	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);
+
+	function bbs_update_playlist_videos() {
+		$playlists_obj = new SquareCoda\Theme\Playlists(false);
+
+		$postfields = $_POST;
+		if(!empty($_POST['playlist_id']) && !empty($_POST['video_id']) && !empty($_POST['direction'])) {
+			$playlist_videos = $playlists_obj->decode_json($playlists_obj->get_field('videos', $_POST['playlist_id']));
+			if($_POST['direction'] == 'add') {
+				$playlist_videos[] = ['video' => intval($_POST['video_id'])];
+			} elseif($_POST['direction'] == 'remove') {
+				foreach($playlist_videos as $index => $playlist_video) {
+					if(!empty($playlist_video['video']) && $_POST['video_id'] == $playlist_video['video']) unset($playlist_videos[$index]);
+				}
+				$playlist_videos = array_values($playlist_videos);
+			}
+
+			update_post_meta($_POST['playlist_id'], 'videos', $playlists_obj->encode_json($playlist_videos));
+
+			echo json_encode(compact('playlist_videos', 'postfields'));
+		} else {
+			echo json_encode(compact('postfields'));
+		}
+
+		exit;
+	}
+	$ajax_action = 'bbs_update_playlist_videos';
+	add_action(sprintf('wp_ajax_%s', $ajax_action), $ajax_action);

@@ -1,5 +1,7 @@
 {% set videos = fn('get_video_search_results') %}
 
+{% set modal_id = 'add-video-to-playlist-modal' %}
+
 <div class="video-search-wrapper">
 	
 	{% include 'search-filters.twig' %}
@@ -10,10 +12,16 @@
 
 		{% for video in videos.results %}
 		<div class="video-post">
-			<a class="video-link" href="{{ video.url }}">
-				<div class="song-title">{{ video.song_title }}</div>
-				<div class="contestant">{{ video.contestant.title }}</div>
-			</a>
+			<div class="add-to-playlist scfe-modal-trigger" video_id="{{ video.id }}" title="Add to playlist(s)" target="#{{ modal_id }}" video_title="{{ video.song_title }}" video_contestant="{{ video.contestant.title }}" video_date="{{ video.date }}" judge_id="{{ fn('get_current_judge_id') }}">
+				<span class="fas fa-plus"></span>
+			</div>
+			<div class="video-link">
+				<a class="song-title" href="{{ video.url }}">{{ video.song_title }}</a>
+				<div class="subtitle">
+					<div class="contestant">{{ video.contestant.title }}</div>
+					<div class="video-date">{{ video.date }}</div>
+				</div>
+			</div>
 		</div>
 		{% endfor %}
 	</div>
@@ -23,3 +31,8 @@
 	</div>
 
 </div>
+
+{{ include('scfe-modal.twig', {
+	modal_header: '<h4>Add video to playlist(s)</h4><div class="modal-video-title"></div>',
+	modal_body: '',
+}) }}

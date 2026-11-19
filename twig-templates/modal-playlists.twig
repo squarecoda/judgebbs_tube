@@ -1,0 +1,11 @@
+<div class="modal-playlists">
+{% if playlists|length %}
+	{% for playlist in playlists %}
+	<div class="modal-playlist" playlist_id="{{ playlist.id }}" videos="{{ fn('get_post_meta', playlist.id, 'videos', true) }}">
+		{{ include('playlist-percentage.twig', { playlist_details: playlist, show_title: true, add_to_playlist: true }) }}
+	</div>
+	{% endfor %}
+{% endif %}
+</div>
+
+<div class="create-playlist"><span class="fas fa-plus"></span> Create Playlist</div>

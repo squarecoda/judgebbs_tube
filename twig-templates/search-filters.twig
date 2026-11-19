@@ -67,7 +67,7 @@
 	},
 ] %}
 
-<form class="video-search-filters" method="get">
+<form class="video-search-filters" method="get" action="{{ fn('get_the_permalink') }}">
 
 	<input type="hidden" name="video-search-filters">
 

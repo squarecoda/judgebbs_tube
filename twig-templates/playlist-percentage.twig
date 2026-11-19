@@ -18,9 +18,9 @@
 	{% endif %}
 	<div class="score-text">
 		{% if show_title %}
-		<div class="playlist-title">
+		<a class="playlist-title" href="{{ fn('get_the_permalink', playlist.id) }}{{ current_judge_id ? '?judge_id=' ~ current_judge_id }}">
 			{{ fn('get_the_title', playlist_details.id) }} 
-		</div>
+		</a>
 		{% endif %}
 
 		<div class="playlist-subtitle">
@@ -41,4 +41,10 @@
 
 		</div>
 	</div>
+	{% if add_to_playlist %}
+	<div class="fas fa-plus" title="Add to playlist"></div>
+	<div class="fas fa-minus" title="Remove from playlist"></div>
+	<div class="fas fa-check" title="Added to playlist"></div>
+	<div class="fas fa-cog fa-spin" title="Processing"></div>
+	{% endif %}
 </div>

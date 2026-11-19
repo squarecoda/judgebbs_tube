@@ -251,6 +251,7 @@ class Videos extends Child_Theme {
 			'title' => get_the_title($post_id),
 			'url' => get_the_permalink($post_id),
 			'contestant' => $contestant_obj->get_post_array($contestant_id),
+			'date' => self::static_get_video_date_display($post_id),
 			'song_title' => $this->get_field('song_title', $post_id),
 		];
 	}
