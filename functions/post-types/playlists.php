@@ -142,7 +142,7 @@ class Playlists extends Child_Theme {
 			],
 			'scoring' => [
 				'type' => 'true-false',
-				'label' => 'Assigned playlist?',
+				'label' => 'Scoring playlist?',
 				'styles' => [
 					'width' => '20%',
 				],
