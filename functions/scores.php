@@ -153,6 +153,12 @@
 			],
 		]);				
 
+		//Delete playlist transient (to update number completed)
+		if(!empty($playlist_id)) {
+			$transient_name = sprintf('playlist_details__%s__%s', $playlist_id, $judge_id);
+			delete_transient($transient_name);
+		}
+
 		//Update title
 		wp_update_post([
 			'ID' => $score_id,

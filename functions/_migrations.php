@@ -228,4 +228,84 @@
 			wp_die();
 		}
 	}
-	add_action('admin_init', 'add_sort_order_to_playlists');	
+	add_action('admin_init', 'add_sort_order_to_playlists');
+
+	function create_users_for_active_judges() {
+		if(current_user_can('administrator') && !empty($_GET[__FUNCTION__]) && $_GET[__FUNCTION__] == 'true') {
+			$results = get_posts([
+				'post_type' => 'bbs-judge',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+				'meta_query' => [
+					[
+						'relation' => 'OR',
+						[
+							'key' => 'user_account',
+							'value' => '',
+						],
+						[
+							'key' => 'user_account',
+							'compare' => 'NOT EXISTS',
+						],
+					],
+					[
+						'key' => 'status',
+						'value' => 'inactive',
+						'compare' => '!=',
+					],
+				],
+			]);
+
+			display_result(count($results));
+			display_result($results);
+
+
+			foreach($results as $result_id) {
+				$fields = [
+					'email',
+					'first_name',
+					'last_name',
+					'legacy_username',
+				];
+
+				foreach($fields as $field) $$field = get_post_meta($result_id, $field, true);
+	
+				// display_result($first_name);
+				// display_result($last_name);
+				// display_result($email);
+				// display_result(get_the_title($result_id));
+				// display_result(get_edit_post_link($result_id));
+
+				// wp_die();
+
+				if(email_exists($email)) {
+					echo sprintf('A user with this email (%s) already exists.  Please try another email address.', $email);
+				}
+
+				//Set unique username
+				if(!empty($first_name) && !empty($first_name)) {
+					$username = strtolower(str_replace([' ', '-', '.'], '', sprintf('%s%s', $first_name, $last_name)));
+				} else {
+					$username = $legacy_username;
+				}
+				$original_username = $username;
+				$i = 1;
+				while(username_exists($username)) { 
+					$username = sprintf('%s%s', $original_username, $i);
+					$i++;
+				}
+
+				//Create User
+				$user_id = wp_create_user($username, bin2hex(openssl_random_pseudo_bytes(4)), $email);
+				if(!empty($first_name) && !empty($first_name)) {
+					wp_update_user(['ID' => $user_id, 'first_name' => $first_name, 'last_name' => $last_name]);
+				}
+
+				//Update Judge Record
+				update_post_meta($result_id, 'user_account', $user_id);
+			}
+			wp_die();
+		}
+	}
+	add_action('admin_init', 'create_users_for_active_judges');
+

@@ -269,7 +269,8 @@ class Judges extends Child_Theme {
 					],
 					'add_new' => true,
 					'add_new_fields' => [
-						'username' => 'legacy_username',
+						'first_name' => 'first_name',
+						'last_name' => 'last_name',
 						'email' => 'email',
 					],
 				],

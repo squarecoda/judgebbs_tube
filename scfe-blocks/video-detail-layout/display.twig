@@ -27,7 +27,7 @@
 		{{ include('video-detail/data.twig') }}
 	</div>
 
-	{% if not hide_scores %}
+	{% if not hide_scores and not scoring %}
 	<div class="scores large">
 		{{ include('reference-scores.twig') }}
 	</div>
