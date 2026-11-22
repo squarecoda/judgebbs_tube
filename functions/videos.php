@@ -131,3 +131,9 @@
 			'total_videos' => count($videos),
 		];
 	}
+
+	function get_video_permalink($video_id) {
+		$video_id = get_int_from_typeahead_field($video_id);
+		$permalink = get_the_permalink($video_id);
+		return $permalink;
+	}

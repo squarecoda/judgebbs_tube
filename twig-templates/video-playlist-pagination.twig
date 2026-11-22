@@ -5,7 +5,7 @@
 
 	<div class="pagination-buttons">
 		{% if pagination.prev_page and pagination.prev_order %}
-		<a class="pagination-button prev" href="{{ fn('get_the_permalink', pagination.prev_page) }}?playlist={{ get.playlist }}&order={{ pagination.prev_order }}">
+		<a class="pagination-button prev" href="{{ fn('get_video_permalink', pagination.prev_page) }}?playlist={{ get.playlist }}&order={{ pagination.prev_order }}">
 			<span class="fas fa-chevron-left"></span>
 		</a>
 		{% else %}
@@ -19,7 +19,7 @@
 		{% endif %}
 
 		{% if pagination.next_page and pagination.next_order %}
-		<a class="pagination-button prev" href="{{ fn('get_the_permalink', pagination.next_page) }}?playlist={{ get.playlist }}&order={{ pagination.next_order }}">
+		<a class="pagination-button prev" href="{{ fn('get_video_permalink', pagination.next_page) }}?playlist={{ get.playlist }}&order={{ pagination.next_order }}">
 			<span class="fas fa-chevron-right"></span>
 		</a>
 		{% else %}
