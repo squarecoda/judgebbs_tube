@@ -1,4 +1,15 @@
 <?php
+	function single_judge_content($content) {
+		global $post;
+
+		if(!empty($post->post_type) && $post->post_type == 'bbs-judge') {
+			return '<!-- wp:scfe/judge-detail-layout /-->';
+		}
+
+		return $content;
+	}
+	add_filter('the_content', 'single_judge_content', 5);
+
 	function get_current_judge_id() {
 		if(current_user_can('administrator') && !empty($_GET['judge_id'])) {
 			return $_GET['judge_id'];

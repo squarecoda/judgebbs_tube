@@ -1,4 +1,15 @@
 <?php
+	function single_playlist_content($content) {
+		global $post;
+
+		if(!empty($post->post_type) && $post->post_type == 'bbs-playlist') {
+			return '<!-- wp:scfe/playlist-detail-layout /-->';
+		}
+
+		return $content;
+	}
+	add_filter('the_content', 'single_playlist_content', 5);
+
 	function get_assigned_playlists($judge_id = '') {
 		if(empty($judge_id)) $judge_id = get_current_judge_id();
 
